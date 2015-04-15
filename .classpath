@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/supercsv-2.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/adapter-common.jar"/>
+	<classpathentry kind="lib" path="lib/adapter-interface.jar"/>
+	<classpathentry kind="lib" path="INFA_JUnit_lib/adapter-interfaceTester.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
