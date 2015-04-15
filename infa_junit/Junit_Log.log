@@ -1,0 +1,10 @@
+15:48:36,855 INFO  [com.informatica.cloud.api.adapter.test.write.WriteTest:setUpBeforeClass:104] - **********************************READ ME****************************: 
+This WriteTest does not test all writer features ... Use the test for testing whether any exceptions are thrown.
+All the data MAY NOT get inserted into the SYSTEM 
+ 15:48:36,859 INFO  [com.informatica.cloud.api.adapter.test.write.WriteTest:setUp:112] - Testing for record : Account
+ 15:48:36,860 INFO  [com.informatica.cloud.api.adapter.test.write.WriteTest:setUp:112] - Testing for record : Account
+ 15:48:36,862 INFO  [com.informatica.cloud.api.adapter.test.write.WriteTest:setUp:112] - Testing for record : Account
+ 15:48:36,864 INFO  [com.informatica.cloud.api.adapter.test.write.WriteTest:setUp:112] - Testing for record : Account
+ 15:48:36,866 INFO  [com.informatica.cloud.api.adapter.test.write.WriteTest:setUp:112] - Testing for record : Account
+ 15:48:36,868 INFO  [com.informatica.cloud.api.adapter.test.write.WriteTest:setUp:112] - Testing for record : Account
+ 

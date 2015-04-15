@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="createPackage" name="CBAdapter">
+    
+	<property environment="env"/>
+	<property name="dir.dist" location="${basedir}/dist"/>
+	<property name="dir.src" location="${basedir}/src" />
+	<property name="dir.bin" location="${basedir}/bin"/>
+	<property name="dir.lib" location="${basedir}/lib"/>
+	<property name="dir.res" location="${basedir}/resources"/>
+	<property name="debuglevel" value="source,lines,vars"/>
+	<property name="agent_main" location="C:/Program Files (x86)/Informatica Cloud Secure Agent/main"/>
+	<!--property name="agent_main.bin" location="${agent_main}/bin/rdtm/javalib/523800"/>
+	<property name="agent_main.tomcat" location="${agent_main}/tomcat/plugins/523800"/-->
+	<path id="cloud-adapter.classpath">
+		<fileset dir="${dir.lib}">
+			<include name = "*.jar"/>
+		</fileset>
+	</path>
+	
+	<target name="clean">
+		<delete dir="${dir.bin}" />
+		<delete dir="${dir.dist}"/>
+    </target>
+
+	<target depends="clean" name="cleanall" description="Remove all generated files and dirs." /> 
+	
+    <target name="init" depends="cleanall">
+        <mkdir dir="${dir.bin}"/>
+    	<mkdir dir="${dir.dist}"/>
+    	<mkdir dir="${dir.lib}"/>
+    	<mkdir dir="${dir.res}"/>
+    </target>
+
+	<target name="compile" depends="init" description="Compile all source code. Output goes to ${dir.bin}">
+		<javac srcdir="${dir.src}" destdir="${dir.bin}"	listfiles="yes"	includes="com/informatica/**" debug="true" debuglevel="${debuglevel}">
+			<classpath>
+				<path refid="cloud-adapter.classpath"/>
+			</classpath>
+			<compilerarg value="-Xstdout" />
+			<compilerarg value="compiler_log.txt"/>
+		</javac>
+
+	</target>
+
+    <target name="cb-connector.jar" description="Builds the jar in ${dir.dist} for the Couchbase connector." depends="compile">
+    	<echo message="${ant.project.name}: ${ant.file}"/>
+    	<jar basedir="${dir.bin}" includes="com/informatica/**" defaultexcludes="true" jarfile="${dir.dist}/cb-connector.jar">
+    		<service type="com.informatica.cloud.api.adapter.plugin.IPlugin" provider="com.couchbase.connector.plugin.CBPlugin" />
+    	</jar>
+    </target>
+	
+	<target name="createPackage" description="Build the zip file consisting of the cb-connector.jar and its related files" depends="cb-connector.jar">
+		<echo message="Started Creating Zip File !!!"/>
+			<mkdir dir="${dir.dist}/Adapter-jars"/>	
+			<copy todir="${dir.dist}/Adapter-jars">
+	   		
+	   			<fileset dir="${dir.lib}">    			
+	   				<include name="*.jar"/> 
+	   				<exclude name="adapter-common.jar"/>
+	   				<exclude name="adapter-interface.jar"/>
+				</fileset>
+	   			
+				<fileset dir="${dir.res}">    			
+	   				<include name="SuperCSV-LICENSE"/> 
+	   				<include name="SuperCSV-NOTICE"/> 
+				</fileset>
+				
+	   			<fileset dir="${dir.dist}">    			
+	   			    <include name="cb-connector.jar"/>  
+	   			</fileset>
+	   			
+	   		</copy>	
+	   		<zip destfile="${dir.dist}/package-CBAdapter.1.zip">
+	   			<zipfileset dir="${dir.dist}/Adapter-jars" prefix="Adapter-jars"/>
+	   		</zip>
+		<echo message="Finished Creating Zip File !!!"/>
+	</target>
+	
+	<target name="copyJarsToPluginsDirs" depends="createPackage">
+		<echo message="Started copy Jars into plugins folders"/>
+		<copy todir="${agent_main.bin}" overwrite="true">
+			<fileset dir="${dir.dist}">    			
+			    <include name="cb-connector.jar"/>  
+			</fileset>
+			<fileset dir="${dir.res}">    			
+   				<include name="License.txt"/> 
+			</fileset>
+		</copy>
+		<copy todir="${agent_main.tomcat}" overwrite="true">
+			<fileset dir="${dir.dist}">    			
+			    <include name="cb-connector.jar"/>  
+			</fileset>
+			<fileset dir="${dir.res}">    			
+   				<include name="License.txt"/> 
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="DeployAndRestartAgent" depends="copyJarsToPluginsDirs" description="Restarts the Secure Agent">
+		<echo message="Secure Agent is Shutting down..."/>
+		<exec executable="${agent_main}/../infaagent.exe">
+			<arg value="shutdown"/>
+		</exec>
+		<exec executable="${agent_main}/../infaagent.exe">
+			<arg value="startup"/>
+		</exec>
+	</target>
+	
+	<target name="Only-RestartAgent" description="Restarts the Secure Agent">
+		<echo message="Secure Agent is Shutting down..."/>
+		<exec executable="${agent_main}/../infaagent.exe">
+			<arg value="shutdown"/>
+		</exec>
+		<exec executable="${agent_main}/../infaagent.exe">
+			<arg value="startup"/>
+		</exec>
+	</target>
+	
+
+	<!-- ================================= 
+	          JUNIT related targets START HERE              
+	     ================================= -->
+	<property name="dir.junit.infa" location="${basedir}/infa_junit"/>
+	<property name="test.junit.results" value="${dir.junit.infa}/junit_results"/>
+	<property name="test.junit.reports" value="${dir.junit.infa}/junit_reports"/>
+	<property name="test.junit.adapterjars" value="${dir.junit.infa}/Adapter-jars"/>
+	<property name="test.junit.junitjars" value="${basedir}/infa_junit_lib"/>
+
+	<target name="infa-junit-test" depends="cb-connector.jar" >
+	
+		
+		<mkdir dir="${test.junit.results}" />
+		<mkdir dir="${test.junit.reports}" />
+		<mkdir dir="${test.junit.adapterjars}" />
+
+		<!-- Copy the jars of the dist folder into the Adapter-jars folder.
+			 This is done as some changes will be done to contents of the adapter jar -->
+		<copy todir="${test.junit.adapterjars}">
+			<fileset dir="${dir.dist}" includes="*.jar"/>
+			<fileset dir="${test.junit.junitjars}">
+				<include name = "*.jar"/>
+			</fileset>
+		</copy>
+		
+		<!-- 
+			NOTE: Change this by manually copying the adapter-interfaceTester.jar,hamcrest-all-1.3.jar,junit-4.10.jar and log4j-1.2.9.jar into your lib. 
+			You will not have dir ${toolkit-dist.dir}/adapter-tester.
+		 -->
+		<!--copy todir="${dir.lib}">
+			<fileset dir="${toolkit-dist.dir}/adapter-tester" includes="*.jar"/>
+		</copy-->
+		
+		<path id="junit.classpath">
+				<fileset dir="${dir.lib}">
+					<include name = "*.jar"/>
+				</fileset>
+			<fileset dir="${test.junit.junitjars}">
+				<include name = "*.jar"/>
+			</fileset>
+				<fileset dir="${dir.dist}">
+					<include name = "*.jar"/>
+				</fileset>
+		</path>
+		<!-- A file ./INFA_JUnit/Junit_Log.log will be created. This config is specified in ${dir.lib}/adapter-interfaceTester.jar!/log4j.properties -->
+		<property url="jar:file:${test.junit.junitjars}/adapter-interfaceTester.jar!/log4j.properties" />
+		
+		<java classname="com.informatica.cloud.api.adapter.test.INICreator" resultproperty="fileCreated" >
+					<classpath refid="junit.classpath"/>
+		</java>
+		<fail message=".${line.separator}------> INI file has been created under 'infa_junit/INIFile' directory.${line.separator}------> Set the parameters in the .ini and run the tests again.${line.separator}">
+			<condition>
+				<equals arg1="${fileCreated}" arg2="1"/>
+			</condition>
+		</fail>
+		
+		<!-- See the <uuid>.ini file in INIFiles for setting up the connection parameters like username/password/url and SampleSize for testing the record names -->
+		<junit   printsummary="yes" haltonfailure="no" haltonerror="no">
+			<classpath refid="junit.classpath"/>
+			<formatter type="xml" usefile="true" />
+			
+			<test name = "com.informatica.cloud.api.adapter.test.metadata.RegistrationInfoTest" todir="${test.junit.results}" />
+			<test name = "com.informatica.cloud.api.adapter.test.typesystem.DataTypeListTest" todir="${test.junit.results}" />
+			<test name = "com.informatica.cloud.api.adapter.test.typesystem.TypeSystemTest" todir="${test.junit.results}" />
+			<test name = "com.informatica.cloud.api.adapter.test.plugin.PluginTest" todir="${test.junit.results}" />
+			<test name = "com.informatica.cloud.api.adapter.test.connection.ConnectionTest" todir="${test.junit.results}" />
+			<test name = "com.informatica.cloud.api.adapter.test.connection.ConnectionAttributeListTest" todir="${test.junit.results}" />
+
+			<test name = "com.informatica.cloud.api.adapter.test.metadata.MetaDataTest" todir="${test.junit.results}" />
+			<!--
+			<test name = "com.informatica.cloud.api.adapter.test.metadata.MetaDataParameterizedTest" todir="${test.junit.results}" />
+			<test name = "com.informatica.cloud.api.adapter.test.metadata.ReadOperationAttributeListTest" todir="${test.junit.results}" />
+			<test name = "com.informatica.cloud.api.adapter.test.metadata.RecordAttributeListTest" todir="${test.junit.results}" />
+						-->
+			<test name = "com.informatica.cloud.api.adapter.test.metadata.WriteOperationAttributeListTest" todir="${test.junit.results}" />
+
+			<!-- This will create a <Record_name>.csv file in the CSV folder for the record name specified in the <uuid>.ini file -->
+			<!-- test name = "com.informatica.cloud.api.adapter.test.read.ReadTest" todir="${test.junit.results}" /-->
+			<!-- For testing record say, "Opportunity" specified in the <uuid>.ini file 
+			through WriteTest create the following files in ./CSV/ folder  
+				* Opportunity_Write.csv for testing insert().
+				* Opportunity_Update.csv for testing update().
+				* Opportunity_Upsert.csv for testing upsert().
+				* Opportunity_Delete.csv for testing delete().
+			-->
+			<test name = "com.informatica.cloud.api.adapter.test.write.WriteTest" todir="${test.junit.results}" />
+			<!-- use this if the order doesn't matter -->
+			<!-- 
+			 <batchtest todir="${test.junit.results}">
+		        <fileset dir="${dir.build}">
+		          <include name="**/*Test.class"/>	
+		        </fileset>
+		      </batchtest> 
+		     -->
+		</junit>
+
+		<junitreport todir="${test.junit.results}">
+			<fileset dir="${test.junit.results}">
+				<include name="TEST-*" />
+			</fileset>
+			<report todir="${test.junit.reports}"/>
+		</junitreport>
+		<echo message="Open index.html to view the results in 'infa_junit\junit_reports'"/>
+	</target>
+
+	<target name ="infa-junit-clean">
+		<delete dir="${dir.junit.infa}" />
+	</target>
+
+	<!-- ===== END OF JUNIT RELATED TARGETS ====== -->
+	
+</project>

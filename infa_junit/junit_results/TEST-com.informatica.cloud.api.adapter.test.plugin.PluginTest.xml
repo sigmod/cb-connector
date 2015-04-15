@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="1" failures="0" hostname="WIN-RDVOFFCHU4G" name="com.informatica.cloud.api.adapter.test.plugin.PluginTest" skipped="0" tests="7" time="0.032" timestamp="2015-01-29T15:48:36">
+  <properties>
+    <property name="java.vendor" value="Oracle Corporation" />
+    <property name="log4j.appender.FILE" value="org.apache.log4j.FileAppender" />
+    <property name="env.USERDOMAIN_ROAMINGPROFILE" value="WIN-RDVOFFCHU4G" />
+    <property name="sun.java.launcher" value="SUN_STANDARD" />
+    <property name="eclipse.pdebuild.templates" value="/D:/eclipse-jee-luna-SR1a-win32/eclipse/plugins/org.eclipse.pde.build_3.9.0.v20140415-2029/templates/" />
+    <property name="sun.management.compiler" value="HotSpot Client Compiler" />
+    <property name="env.PROMPT" value="$P$G" />
+    <property name="dir.dist" value="D:\workspace\CSVFile-adapter\dist" />
+    <property name="ant.file.type.CSVFileAdapter" value="file" />
+    <property name="os.name" value="Windows Server 2012" />
+    <property name="env.FP_NO_HOST_CHECK" value="NO" />
+    <property name="sun.boot.class.path" value="C:\Program Files (x86)\Java\jdk1.7.0_65\jre\lib\resources.jar;C:\Program Files (x86)\Java\jdk1.7.0_65\jre\lib\rt.jar;C:\Program Files (x86)\Java\jdk1.7.0_65\jre\lib\sunrsasign.jar;C:\Program Files (x86)\Java\jdk1.7.0_65\jre\lib\jsse.jar;C:\Program Files (x86)\Java\jdk1.7.0_65\jre\lib\jce.jar;C:\Program Files (x86)\Java\jdk1.7.0_65\jre\lib\charsets.jar;C:\Program Files (x86)\Java\jdk1.7.0_65\jre\lib\jfr.jar;C:\Program Files (x86)\Java\jdk1.7.0_65\jre\classes" />
+    <property name="env.COMPUTERNAME" value="WIN-RDVOFFCHU4G" />
+    <property name="env.CommonProgramW6432" value="C:\Program Files\Common Files" />
+    <property name="env.ALLUSERSPROFILE" value="C:\ProgramData" />
+    <property name="log4j.appender.FILE.Append" value="false" />
+    <property name="sun.desktop" value="windows" />
+    <property name="java.vm.specification.vendor" value="Oracle Corporation" />
+    <property name="ant.home" value="D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502" />
+    <property name="java.runtime.version" value="1.7.0_65-b19" />
+    <property name="env.HOMEPATH" value="\Users\Administrator" />
+    <property name="user.name" value="Administrator" />
+    <property name="log4j.appender.FILE.layout.Title" value="LOGs of JUnit tests" />
+    <property name="user.language" value="en" />
+    <property name="sun.boot.library.path" value="C:\Program Files (x86)\Java\jdk1.7.0_65\jre\bin" />
+    <property name="ant.project.default-target" value="createPackage" />
+    <property name="ant.project.name" value="CSVFileAdapter" />
+    <property name="java.version" value="1.7.0_65" />
+    <property name="env.PROCESSOR_IDENTIFIER" value="Intel64 Family 6 Model 62 Stepping 4, GenuineIntel" />
+    <property name="user.timezone" value="" />
+    <property name="log4j.rootLogger" value="DEBUG,FILE" />
+    <property name="env.CLIENTNAME" value="CAW180967Z" />
+    <property name="dir.junit.infa" value="D:\workspace\CSVFile-adapter\infa_junit" />
+    <property name="env.TEMP" value="C:\Users\ADMINI~1\AppData\Local\Temp\2" />
+    <property name="sun.arch.data.model" value="32" />
+    <property name="fileCreated" value="0" />
+    <property name="java.endorsed.dirs" value="C:\Program Files (x86)\Java\jdk1.7.0_65\jre\lib\endorsed" />
+    <property name="env.PROCESSOR_ARCHITEW6432" value="AMD64" />
+    <property name="sun.cpu.isalist" value="pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86" />
+    <property name="env.HOMEDRIVE" value="C:" />
+    <property name="sun.jnu.encoding" value="Cp1252" />
+    <property name="dir.lib" value="D:\workspace\CSVFile-adapter\lib" />
+    <property name="file.encoding.pkg" value="sun.io" />
+    <property name="file.separator" value="\" />
+    <property name="java.specification.name" value="Java Platform API Specification" />
+    <property name="java.class.version" value="51.0" />
+    <property name="log4j.appender.FILE.layout" value="org.apache.log4j.PatternLayout" />
+    <property name="user.country" value="US" />
+    <property name="java.home" value="C:\Program Files (x86)\Java\jdk1.7.0_65\jre" />
+    <property name="env.PSModulePath" value="C:\Windows\system32\WindowsPowerShell\v1.0\Modules\;c:\Program Files (x86)\Microsoft SQL Server\110\Tools\PowerShell\Modules\;C:\Program Files (x86)\AWS Tools\PowerShell\" />
+    <property name="env.APPDATA" value="C:\Users\Administrator\AppData\Roaming" />
+    <property name="env.PUBLIC" value="C:\Users\Public" />
+    <property name="java.vm.info" value="mixed mode, sharing" />
+    <property name="env.ComSpec" value="C:\Windows\system32\cmd.exe" />
+    <property name="env.OS" value="Windows_NT" />
+    <property name="env.CommonProgramFiles" value="C:\Program Files (x86)\Common Files" />
+    <property name="ant.file" value="D:\workspace\CSVFile-adapter\build.xml" />
+    <property name="os.version" value="6.2" />
+    <property name="env.ProgramW6432" value="C:\Program Files" />
+    <property name="agent_main" value="C:\Program Files (x86)\Informatica Cloud Secure Agent\main" />
+    <property name="path.separator" value=";" />
+    <property name="java.vm.version" value="24.65-b04" />
+    <property name="user.variant" value="" />
+    <property name="env.USERPROFILE" value="C:\Users\Administrator" />
+    <property name="ant.library.dir" value="D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib" />
+    <property name="test.junit.results" value="D:\workspace\CSVFile-adapter\infa_junit/junit_results" />
+    <property name="env.JAVA_HOME" value="C:\Program Files (x86)\Java\jdk1.7.0_65" />
+    <property name="test.junit.adapterjars" value="D:\workspace\CSVFile-adapter\infa_junit/Adapter-jars" />
+    <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob" />
+    <property name="env.TMP" value="C:\Users\ADMINI~1\AppData\Local\Temp\2" />
+    <property name="log4j.appender.FILE.File" value="infa_junit/Junit_Log.log" />
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle" />
+    <property name="awt.toolkit" value="sun.awt.windows.WToolkit" />
+    <property name="user.script" value="" />
+    <property name="test.junit.junitjars" value="D:\workspace\CSVFile-adapter/infa_junit_lib" />
+    <property name="eclipse.pdebuild.scripts" value="/D:/eclipse-jee-luna-SR1a-win32/eclipse/plugins/org.eclipse.pde.build_3.9.0.v20140415-2029/scripts/" />
+    <property name="user.home" value="C:\Users\Administrator" />
+    <property name="env.ProgramData" value="C:\ProgramData" />
+    <property name="env.SESSIONNAME" value="RDP-Tcp#0" />
+    <property name="dir.bin" value="D:\workspace\CSVFile-adapter\bin" />
+    <property name="env.ProgramFiles(x86)" value="C:\Program Files (x86)" />
+    <property name="java.specification.vendor" value="Oracle Corporation" />
+    <property name="java.library.path" value="D:\eclipse-jee-luna-SR1a-win32\eclipse;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:/Program Files (x86)/Java/jre7/bin/client;C:/Program Files (x86)/Java/jre7/bin;C:/Program Files (x86)/Java/jre7/lib/i386;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;c:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn\;c:\Program Files\Microsoft SQL Server\110\Tools\Binn\;c:\Program Files\Microsoft SQL Server\110\DTS\Binn\;c:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn\ManagementStudio\;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\PrivateAssemblies\;c:\Program Files (x86)\Microsoft SQL Server\110\DTS\Binn\;C:\Program Files\Amazon\cfn-bootstrap\;C:\Program Files (x86)\Java\jdk1.7.0_65\bin;D:\eclipse-jee-luna-SR1a-win32\eclipse;;.;D:\eclipse-jee-luna-SR1a-win32\eclipse\configuration\org.eclipse.osgi\676\0\.cp" />
+    <property name="java.vendor.url" value="http://java.oracle.com/" />
+    <property name="env.NUMBER_OF_PROCESSORS" value="2" />
+    <property name="java.vm.vendor" value="Oracle Corporation" />
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment" />
+    <property name="dir.src" value="D:\workspace\CSVFile-adapter\src" />
+    <property name="java.class.path" value="D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-antlr.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-apache-bcel.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-apache-bsf.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-apache-log4j.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-apache-oro.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-apache-regexp.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-apache-resolver.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-apache-xalan2.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-commons-logging.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-commons-net.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-jai.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-javamail.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-jdepend.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-jmf.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-jsch.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-junit.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-junit4.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-launcher.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-netrexx.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-swing.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant-testutil.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\configuration\org.eclipse.osgi\64\0\.cp\lib\antdebug.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\configuration\org.eclipse.osgi\64\0\.cp\lib\remote.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\configuration\org.eclipse.osgi\65\0\.cp\lib\remoteAnt.jar;C:\Program Files (x86)\Java\jdk1.7.0_65\lib\tools.jar;D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.eclipse.swt.win32.win32.x86_3.103.1.v20140903-1947.jar" />
+    <property name="ant.version" value="Apache Ant(TM) version 1.9.2 compiled on July 8 2013" />
+    <property name="sun.java.command" value="org.eclipse.ant.internal.launching.remote.InternalAntRunner -Dorg.eclipse.ant.core.ANT_PROCESS_ID=1422546514318 -Declipse.connect.port=58608 -Declipse.pdebuild.home=/D:/eclipse-jee-luna-SR1a-win32/eclipse/plugins/org.eclipse.pde.build_3.9.0.v20140415-2029/./ -Declipse.pdebuild.scripts=/D:/eclipse-jee-luna-SR1a-win32/eclipse/plugins/org.eclipse.pde.build_3.9.0.v20140415-2029/scripts/ -Declipse.pdebuild.templates=/D:/eclipse-jee-luna-SR1a-win32/eclipse/plugins/org.eclipse.pde.build_3.9.0.v20140415-2029/templates/ -Dant.home=D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502 -logger org.eclipse.ant.internal.launching.remote.logger.RemoteAntBuildLogger -inputhandler org.eclipse.ant.internal.ui.antsupport.inputhandler.ProxyInputHandler -buildfile D:\workspace\CSVFile-adapter\build.xml createPackage infa-junit-test" />
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification" />
+    <property name="test.junit.reports" value="D:\workspace\CSVFile-adapter\infa_junit/junit_reports" />
+    <property name="dir.res" value="D:\workspace\CSVFile-adapter\resources" />
+    <property name="env.windir" value="C:\Windows" />
+    <property name="env.LOGONSERVER" value="\\WIN-RDVOFFCHU4G" />
+    <property name="java.vm.specification.version" value="1.7" />
+    <property name="env.PROCESSOR_ARCHITECTURE" value="x86" />
+    <property name="sun.os.patch.level" value="" />
+    <property name="sun.cpu.endian" value="little" />
+    <property name="debuglevel" value="source,lines,vars" />
+    <property name="env.ProgramFiles" value="C:\Program Files (x86)" />
+    <property name="env.ANT_HOME" value="D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502" />
+    <property name="env.PROCESSOR_REVISION" value="3e04" />
+    <property name="eclipse.pdebuild.home" value="/D:/eclipse-jee-luna-SR1a-win32/eclipse/plugins/org.eclipse.pde.build_3.9.0.v20140415-2029/./" />
+    <property name="java.io.tmpdir" value="C:\Users\ADMINI~1\AppData\Local\Temp\2\" />
+    <property name="env.CommonProgramFiles(x86)" value="C:\Program Files (x86)\Common Files" />
+    <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/" />
+    <property name="env.SystemRoot" value="C:\Windows" />
+    <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment" />
+    <property name="os.arch" value="x86" />
+    <property name="log4j.appender.FILE.layout.ConversionPattern" value="%d{HH:mm:ss,SSS} %-5p [%c:%M:%L] - %m%n " />
+    <property name="java.ext.dirs" value="C:\Program Files (x86)\Java\jdk1.7.0_65\jre\lib\ext;C:\Windows\Sun\Java\lib\ext" />
+    <property name="env.LOCALAPPDATA" value="C:\Users\Administrator\AppData\Local" />
+    <property name="user.dir" value="D:\workspace\CSVFile-adapter" />
+    <property name="line.separator" value="&#xd;&#xa;" />
+    <property name="java.vm.name" value="Java HotSpot(TM) Client VM" />
+    <property name="env.PATHEXT" value=".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC" />
+    <property name="env.Path" value="C:/Program Files (x86)/Java/jre7/bin/client;C:/Program Files (x86)/Java/jre7/bin;C:/Program Files (x86)/Java/jre7/lib/i386;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;c:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn\;c:\Program Files\Microsoft SQL Server\110\Tools\Binn\;c:\Program Files\Microsoft SQL Server\110\DTS\Binn\;c:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn\ManagementStudio\;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\PrivateAssemblies\;c:\Program Files (x86)\Microsoft SQL Server\110\DTS\Binn\;C:\Program Files\Amazon\cfn-bootstrap\;C:\Program Files (x86)\Java\jdk1.7.0_65\bin;D:\eclipse-jee-luna-SR1a-win32\eclipse;" />
+    <property name="basedir" value="D:\workspace\CSVFile-adapter" />
+    <property name="ant.java.version" value="1.7" />
+    <property name="ant.core.lib" value="D:\eclipse-jee-luna-SR1a-win32\eclipse\plugins\org.apache.ant_1.9.2.v201404171502\lib\ant.jar" />
+    <property name="ant.file.CSVFileAdapter" value="D:\workspace\CSVFile-adapter\build.xml" />
+    <property name="env.USERNAME" value="Administrator" />
+    <property name="env.SystemDrive" value="C:" />
+    <property name="file.encoding" value="UTF-8" />
+    <property name="env.USERDOMAIN" value="WIN-RDVOFFCHU4G" />
+    <property name="java.specification.version" value="1.7" />
+    <property name="ant.project.invoked-targets" value="createPackage,infa-junit-test" />
+    <property name="log4j.appender.FILE.layout.LocationInfo" value="true" />
+    <property name="env.PROCESSOR_LEVEL" value="6" />
+  </properties>
+  <testcase classname="com.informatica.cloud.api.adapter.test.plugin.PluginTest" name="testIPluginForRegistrationInfo" time="0.0" />
+  <testcase classname="com.informatica.cloud.api.adapter.test.plugin.PluginTest" name="testIPluginForReader" time="0.006" />
+  <testcase classname="com.informatica.cloud.api.adapter.test.plugin.PluginTest" name="testIPluginForWriter" time="0.005" />
+  <testcase classname="com.informatica.cloud.api.adapter.test.plugin.PluginTest" name="testIPluginForNull" time="0.0" />
+  <testcase classname="com.informatica.cloud.api.adapter.test.plugin.PluginTest" name="testIPluginForVersionInfo" time="0.0" />
+  <testcase classname="com.informatica.cloud.api.adapter.test.plugin.PluginTest" name="testIPluginForConnection" time="0.0" />
+  <testcase classname="com.informatica.cloud.api.adapter.test.plugin.PluginTest" name="testIPluginForMetadata" time="0.011">
+    <error message="The path provided does not exists OR cannot be read!" type="com.informatica.cloud.api.adapter.connection.ConnectionFailedException">com.informatica.cloud.api.adapter.connection.ConnectionFailedException: The path provided does not exists OR cannot be read!
+	at com.informatica.cloudlabs.adapter.csvfile.connection.CSVFileConnection.connect(CSVFileConnection.java:41)
+	at com.informatica.cloud.api.adapter.test.util.Utils.callConnectOnConectionImpl(Utils.java:289)
+	at com.informatica.cloud.api.adapter.test.plugin.PluginTest.testIPluginForMetadata(PluginTest.java:73)
+	at org.eclipse.ant.internal.launching.remote.EclipseDefaultExecutor.executeTargets(EclipseDefaultExecutor.java:36)
+	at org.eclipse.ant.internal.launching.remote.InternalAntRunner.run(InternalAntRunner.java:452)
+	at org.eclipse.ant.internal.launching.remote.InternalAntRunner.main(InternalAntRunner.java:139)
+</error>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
