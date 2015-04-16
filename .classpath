@@ -6,5 +6,16 @@
 	<classpathentry kind="lib" path="lib/adapter-common.jar"/>
 	<classpathentry kind="lib" path="lib/adapter-interface.jar"/>
 	<classpathentry kind="lib" path="INFA_JUnit_lib/adapter-interfaceTester.jar"/>
+	<classpathentry kind="lib" path="lib/couchbase-core-io-1.1.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/couchbase-core-io-1.1.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/couchbase-core-io-1.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/couchbase-java-client-2.1.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/couchbase-java-client-2.1.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/couchbase-java-client-2.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/CouchbaseJDBC41.jar"/>
+	<classpathentry kind="lib" path="lib/rxjava-1.0.4-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/rxjava-1.0.4-sources.jar"/>
+	<classpathentry kind="lib" path="lib/rxjava-1.0.4.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

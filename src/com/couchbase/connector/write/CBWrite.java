@@ -1,22 +1,11 @@
 package com.couchbase.connector.write;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.supercsv.io.CsvMapReader;
-import org.supercsv.io.CsvMapWriter;
-import org.supercsv.io.Tokenizer;
-import org.supercsv.prefs.CsvPreference;
-
 import com.couchbase.connector.connection.CBConnection;
-import com.couchbase.connector.constant.CBConstants;
 import com.couchbase.connector.plugin.CBPlugin;
 import com.couchbase.connector.utils.CBPopulateSuccessAndErrorBuffer;
 import com.couchbase.connector.utils.CBSuccessAndErrorBuffer;
@@ -54,8 +43,7 @@ public class CBWrite implements IWrite2 {
 	public CBSuccessAndErrorBuffer successAndErrorBuffer = new CBSuccessAndErrorBuffer();
 	private CBPopulateSuccessAndErrorBuffer populateBuffer = new CBPopulateSuccessAndErrorBuffer();
 
-	public CBWrite(CBPlugin csvFilePlugin,
-			CBConnection csvConnection) {
+	public CBWrite(CBPlugin csvFilePlugin, CBConnection csvConnection) {
 		connection = csvConnection;
 		plugin = csvFilePlugin;
 		logger = plugin.getLogger();
@@ -114,31 +102,7 @@ public class CBWrite implements IWrite2 {
 			WriteException, DataConversionException, FatalRuntimeException {
 		if (iInputDataBuffer != null) {
 			setOperation(Operation.INSERT);
-			CsvPreference csvPreference = new CsvPreference.Builder('"',
-					connection.sDelimeter.charAt(0), "\r\n").build();
-			FileWriter targetFileWriter;
 			try {
-				FileInputStream fileInputStream = new FileInputStream(
-						connection.sDirectory + File.separator
-								+ primaryRecordInfo.getRecordName() + ".csv");
-				BufferedReader bufferedReader = new BufferedReader(
-						new InputStreamReader(fileInputStream,
-								CBConstants.CHARSET_UTF_8));
-				Tokenizer tokenizer = new Tokenizer(bufferedReader,
-						csvPreference);
-				CsvMapReader csvMapReader = new CsvMapReader(tokenizer,
-						csvPreference);
-				String[] headerLine = csvMapReader.getHeader(true);
-				csvMapReader.close();
-				tokenizer.close();
-				bufferedReader.close();
-				fileInputStream.close();
-
-				targetFileWriter = new FileWriter(connection.sDirectory
-						+ File.separator + primaryRecordInfo.getRecordName()
-						+ ".csv", true);
-				CsvMapWriter csvMapWriter = new CsvMapWriter(targetFileWriter,
-						csvPreference);
 
 				Map<String, String> mapNextLine = new HashMap<String, String>();
 
@@ -150,14 +114,11 @@ public class CBWrite implements IWrite2 {
 						mapNextLine.put(inputFieldList.get(iCount)
 								.getUniqueName(), sValue);
 					}
-					csvMapWriter.write(mapNextLine, headerLine);
 					populateBuffer.populateOutputBuffer(rowData,
 							successAndErrorBuffer);
 					incrementSuccessRowsForOp(1);
 					incrementProcessedRowsForOp(1);
 				}
-				csvMapWriter.close();
-				targetFileWriter.close();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 				logger.logMessage("CSVFileWrite", "insert", ELogMsgLevel.INFO,

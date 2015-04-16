@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<License xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:simba-com:SimbaLicenseSchema">
+  <Info version="1">
+    <ProductSKU>0100100240</ProductSKU>
+    <Product>Simba JDBC Driver for Couchbase</Product>
+    <Platform>Any</Platform>
+    <ProductVersion>1</ProductVersion>
+    <LicenseType>Evaluation</LicenseType>
+    <LicenseCount>1</LicenseCount>
+    <CustomerID>sylvial@simba.com</CustomerID>
+    <Timestamp>2015-03-19T16:35:02.145954-07:00</Timestamp>
+    <Expiry>2015-10-30</Expiry>
+  </Info>
+  <Key>OOi0AGkAeQDmANMAIwDWAGUy/G58dKilwgJ4obc+Gdx6+lwFxV+hNZwniCIYoNeTEXUSHeE2PGfrDaOvTVJv7KWIJAmkfbJHwMI7ntbWeQ7S9GCZyYjdfGmltpZeaQ/EY5JCQq7NBrYCYUoDQSuWZ0X18x3N9ctbQUJXpkdye9/HssZhYTbgLhYUZTv5r1j6+52v3vHMXa4SPQyHwL5vcbn5KbMw7sS9sOT/N3sHJaX1bO1Chquv7rz2w65vfSmoTv7ExeiVFmaAKnrg3mH6i98g22ZAa97z8eu34hZk6oaV0uzm9UqccRFdE0P/w41sfWGlhrCFbjz6pmV31+lx+dfyCxw/57CS</Key>
+</License>

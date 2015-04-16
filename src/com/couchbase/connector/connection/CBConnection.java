@@ -1,58 +1,68 @@
 package com.couchbase.connector.connection;
 
-import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.couchbase.connector.constant.CBConstants;
 import com.informatica.cloud.api.adapter.connection.ConnectionFailedException;
 import com.informatica.cloud.api.adapter.connection.IConnection;
 import com.informatica.cloud.api.adapter.connection.InsufficientConnectInfoException;
+import com.informatica.cloud.api.adapter.connection.StandardAttributes;
 import com.informatica.cloud.api.adapter.plugin.InvalidArgumentException;
 
 public class CBConnection implements IConnection {
 
-	Map<String, String> connAttribs = new HashMap<String, String>();
-	private boolean bConnectStatus = false;
-	public String sDirectory = null;
-	public String sDelimeter = null;
+	// Define a string as the fully qualified class name // (FQCN) of the
+	// desired JDBC driver
+	private static String jdbcDriver = "com.simba.couchbase.jdbc4.Driver";
+
+	private Map<String, String> connAttribs = new HashMap<String, String>();
+	private Connection connection = null;
 
 	@Override
 	public boolean connect() throws InsufficientConnectInfoException,
 			ConnectionFailedException {
-		if(connAttribs != null && !connAttribs.isEmpty() && connAttribs.size() > 0){
-			sDirectory = connAttribs.get(CBConstants.CONN_ATTRIB_DIRECTORY);
-			sDelimeter = connAttribs.get(CBConstants.CONN_ATTRIB_DELIMITER);
-			
-			if (sDelimeter == null) {
-				sDelimeter = CBConstants.DEFAULT_DELIMITER;
+		if (connAttribs != null && !connAttribs.isEmpty()
+				&& connAttribs.size() > 0) {
+			String connectionURL = connAttribs
+					.get(StandardAttributes.connectionUrl);
+			String userName = connAttribs.get(StandardAttributes.username);
+			String password = connAttribs.get(StandardAttributes.password);
+
+			// Check connection parameters
+			if (connectionURL == null || userName == null || password == null) {
+				throw new InsufficientConnectInfoException(
+						"Missing connection parameters:" + connectionURL == null ? " (connection URL)"
+								: "" + userName == null ? " (user name)" : ""
+										+ password == null ? " (password)" : ""
+										+ ".");
 			}
-			if(sDirectory != null){
-				File file = new File(sDirectory);
-				if (file != null && file.exists() && file.canRead()) {
-					if (file.isDirectory()) {
-						bConnectStatus = true;
-					} else {
-						throw new ConnectionFailedException(
-								"Provided path is not a valid directory path! "
-										+ sDirectory);
-					}
-				} else {
-					throw new ConnectionFailedException(
-							"The path provided does not exists OR cannot be read!");
-				}
-			}else{
-				bConnectStatus = false;
+			try {
+				// Load the JDBC Driver class.
+				Class.forName(jdbcDriver);
+				// Establish a connection using the connection // URL
+				connection = DriverManager.getConnection(connectionURL,
+						userName, password);
+				// connection.getMetaData().
+			} catch (Exception e) {
+				throw new ConnectionFailedException(e);
 			}
-		}else{
-			bConnectStatus = false;
 		}
-		return bConnectStatus;
+		return true;
 	}
 
 	@Override
 	public boolean disconnect() {
-		return bConnectStatus;
+		if (connection == null) {
+			return false;
+		}
+		try {
+			connection.close();
+			return true;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	@Override
@@ -63,7 +73,18 @@ public class CBConnection implements IConnection {
 
 	@Override
 	public boolean validate() throws InvalidArgumentException {
-		return false;
+		if (connection == null) {
+			return false;
+		}
+		try {
+			return !connection.isClosed();
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public Connection getConnection() {
+		return connection;
 	}
 
 }

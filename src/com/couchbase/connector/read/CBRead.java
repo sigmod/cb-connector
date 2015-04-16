@@ -1,21 +1,11 @@
 package com.couchbase.connector.read;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.supercsv.io.CsvMapReader;
-import org.supercsv.io.Tokenizer;
-import org.supercsv.prefs.CsvPreference;
-
 import com.couchbase.connector.connection.CBConnection;
-import com.couchbase.connector.constant.CBConstants;
 import com.couchbase.connector.plugin.CBPlugin;
 import com.informatica.cloud.api.adapter.common.ELogMsgLevel;
 import com.informatica.cloud.api.adapter.common.ILogger;
@@ -38,11 +28,11 @@ public class CBRead implements IRead {
 	private CBPlugin plugin;
 	private CBConnection connection;
 	private ILogger logger;
-	
+
 	private RecordInfo primaryRecordInfo;
 	private List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
 	private List<Field> fieldList = new ArrayList<Field>();
-	
+
 	public CBRead(CBPlugin csvFilePlugin, CBConnection csvConnection) {
 		this.plugin = csvFilePlugin;
 		this.connection = csvConnection;
@@ -78,7 +68,8 @@ public class CBRead implements IRead {
 	}
 
 	@Override
-	public void setRecordAttributes(RecordInfo recordInfo, Map<String, String> tgtDesigntimeAttribs) {
+	public void setRecordAttributes(RecordInfo recordInfo,
+			Map<String, String> tgtDesigntimeAttribs) {
 		// TODO Auto-generated method stub
 	}
 
@@ -87,36 +78,31 @@ public class CBRead implements IRead {
 			throws ConnectionFailedException, ReflectiveOperationException,
 			ReadException, DataConversionException, FatalRuntimeException {
 		boolean bStatus = false;
-		if(outputDataBuffer != null){
+		if (outputDataBuffer != null) {
 			try {
-				FileInputStream fileInputStream = new FileInputStream(connection.sDirectory + File.separator + primaryRecordInfo.getRecordName() + ".csv");// Reading file..
-				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream, CBConstants.CHARSET_UTF_8));
-				CsvPreference csvPreference = new CsvPreference.Builder('"',connection.sDelimeter.charAt(0), "\r\n").build();
-				Tokenizer tokenizer = new Tokenizer(bufferedReader, csvPreference);
-				CsvMapReader csvMapReader = new CsvMapReader(tokenizer, csvPreference);
-				
-				String[] headerLine = csvMapReader.getHeader(true);
-				Map<String,String> mapNextLine = new HashMap<String,String>();
+
+				Map<String, String> mapNextLine = new HashMap<String, String>();
 				Object[] rowData = new String[fieldList.size()];
-				while((mapNextLine = csvMapReader.read(headerLine)) != null){
-					for(int iCount=0; iCount<fieldList.size(); iCount++){
-						rowData[iCount] = mapNextLine.get(fieldList.get(iCount).getUniqueName());
-					}
-					outputDataBuffer.setData(rowData);
-				}
-				csvMapReader.close();
-				tokenizer.close();
-				bufferedReader.close();
-				fileInputStream.close();
+				// while((mapNextLine = csvMapReader.read(headerLine)) != null){
+				// for(int iCount=0; iCount<fieldList.size(); iCount++){
+				// rowData[iCount] =
+				// mapNextLine.get(fieldList.get(iCount).getUniqueName());
+				// }
+				// outputDataBuffer.setData(rowData);
+				// }
 				bStatus = true;
-			} catch (IOException e) {
+			} catch (Exception e) {
 				bStatus = false;
 				e.printStackTrace();
-				logger.logMessage("CSVFileMetadata", "getDataPreview", ELogMsgLevel.INFO, "Error occured while reading data: "+e.getMessage());
-				throw new FatalRuntimeException("Error occured while reading data: "+e.getMessage());
+				logger.logMessage("CSVFileMetadata", "getDataPreview",
+						ELogMsgLevel.INFO, "Error occured while reading data: "
+								+ e.getMessage());
+				throw new FatalRuntimeException(
+						"Error occured while reading data: " + e.getMessage());
 			}
-		}else{
-			throw new FatalRuntimeException("No data available! OutputDataBuffer is null!!");
+		} else {
+			throw new FatalRuntimeException(
+					"No data available! OutputDataBuffer is null!!");
 		}
 		return bStatus;
 	}
@@ -130,7 +116,7 @@ public class CBRead implements IRead {
 	@Override
 	public void setFieldList(List<Field> fieldList) {
 		this.fieldList.clear();
-		//this.fieldList.addAll(fieldList);
+		// this.fieldList.addAll(fieldList);
 		this.fieldList = fieldList;
 	}
 
@@ -139,7 +125,7 @@ public class CBRead implements IRead {
 		this.filterInfoList.clear();
 		if (filterInfoList != null && filterInfoList.size() > 0) {
 			this.filterInfoList.addAll(filterInfoList);
-		}	
+		}
 	}
 
 	@Override
