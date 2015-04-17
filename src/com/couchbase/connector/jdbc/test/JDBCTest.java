@@ -36,18 +36,21 @@ public class JDBCTest {
 			System.out.println();
 		}
 
-		String query = "select test_id from product";
+		String query = "select * from product";
 		Statement stmt = connection.createStatement();
 		rs = stmt.executeQuery(query);
 		rsmd = rs.getMetaData();
 		columnsNumber = rsmd.getColumnCount();
+		int row = 0;
 		while (rs.next()) {
 			for (int i = 1; i <= columnsNumber; i++) {
-				System.out.print(rsmd.getColumnName(i) + ":" + rs.getString(i)
+				System.out.print(rsmd.getColumnLabel(i) + ":" + rs.getString(i)
 						+ " ");
 			}
 			System.out.println();
+			row++;
 		}
+		System.out.println(row);
 		connection.close();
 	}
 }
