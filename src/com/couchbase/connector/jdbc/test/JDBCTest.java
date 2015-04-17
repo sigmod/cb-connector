@@ -43,8 +43,8 @@ public class JDBCTest {
 		columnsNumber = rsmd.getColumnCount();
 		while (rs.next()) {
 			for (int i = 1; i <= columnsNumber; i++) {
-				System.out.println(rsmd.getColumnName(i) + ":"
-						+ rs.getString(i) + " ");
+				System.out.print(rsmd.getColumnName(i) + ":" + rs.getString(i)
+						+ " ");
 			}
 			System.out.println();
 		}
