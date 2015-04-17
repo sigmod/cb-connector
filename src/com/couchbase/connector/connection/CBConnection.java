@@ -13,11 +13,13 @@ import com.informatica.cloud.api.adapter.plugin.InvalidArgumentException;
 
 public class CBConnection implements IConnection {
 
-	// Define a string as the fully qualified class name // (FQCN) of the
-	// desired JDBC driver
+	// Define a string as the fully qualified class name
 	private static String jdbcDriver = "com.simba.couchbase.jdbc4.Driver";
 
+	// Connection attributes, the key-values are passed from the Informatica framework
 	private Map<String, String> connAttribs = new HashMap<String, String>();
+	
+	// The JDBC connection object
 	private Connection connection = null;
 
 	@Override
@@ -41,14 +43,15 @@ public class CBConnection implements IConnection {
 			try {
 				// Load the JDBC Driver class.
 				Class.forName(jdbcDriver);
+
 				// Establish a connection using the connection // URL
 				connection = DriverManager.getConnection(connectionURL,
 						userName, password);
-				// connection.getMetaData().
 			} catch (Exception e) {
 				throw new ConnectionFailedException(e);
 			}
 		}
+		// Reaching here without exceptions means the connection is established.
 		return true;
 	}
 

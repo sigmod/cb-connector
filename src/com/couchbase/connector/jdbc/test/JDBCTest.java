@@ -12,7 +12,7 @@ import org.junit.Test;
 public class JDBCTest {
 
 	private static String jdbcDriver = "com.simba.couchbase.jdbc41.Driver";
-	private static String connectionURL = "jdbc:couchbase://localhost:8093;queryEnabled=1;";
+	private static String connectionURL = "jdbc:couchbase://localhost:8093;queryEnabled=1;logLevel=6;logPath=log";
 	private static String username = "Administrator";
 	private static String password = "password";
 
@@ -36,13 +36,13 @@ public class JDBCTest {
 			System.out.println();
 		}
 
-		String query = "select * from default:product;";
+		String query = "select test_id from product";
 		Statement stmt = connection.createStatement();
 		rs = stmt.executeQuery(query);
 		rsmd = rs.getMetaData();
 		columnsNumber = rsmd.getColumnCount();
 		while (rs.next()) {
-			for (int i = 1; i < columnsNumber; i++) {
+			for (int i = 1; i <= columnsNumber; i++) {
 				System.out.println(rsmd.getColumnName(i) + ":"
 						+ rs.getString(i) + " ");
 			}
