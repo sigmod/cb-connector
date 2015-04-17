@@ -18,7 +18,7 @@ import com.informatica.cloud.api.adapter.typesystem.ITypeSystem;
 public class CBRegistrationInfo implements IRegistrationInfo {
 
 	private ArrayList<ConnectionAttribute> connAttribs;
-	private ITypeSystem csvTypeSystem;
+	private ITypeSystem cbTypeSystem;
 	private UUID id = UUID.fromString("10d8f7e2-a2cc-11e4-89d3-123b93f75cba");
 	
 	@Override
@@ -105,10 +105,10 @@ public class CBRegistrationInfo implements IRegistrationInfo {
 
 	@Override
 	public ITypeSystem getTypeSystem() {
-		if (csvTypeSystem == null) {
-			csvTypeSystem = new CBTypeSystem();
+		if (cbTypeSystem == null) {
+			cbTypeSystem = new CBTypeSystem();
 		}
-		return csvTypeSystem;
+		return cbTypeSystem;
 	}
 
 	@Override

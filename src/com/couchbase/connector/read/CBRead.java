@@ -80,7 +80,6 @@ public class CBRead implements IRead {
 		boolean bStatus = false;
 		if (outputDataBuffer != null) {
 			try {
-
 				Map<String, String> mapNextLine = new HashMap<String, String>();
 				Object[] rowData = new String[fieldList.size()];
 				// while((mapNextLine = csvMapReader.read(headerLine)) != null){

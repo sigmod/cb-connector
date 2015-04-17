@@ -3,6 +3,9 @@ package com.couchbase.connector.metadata;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -35,10 +38,10 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 	private List<RecordInfo> lstRecordInfo = new ArrayList<RecordInfo>();
 	private ILogger logger;
 
-	public CBMetadata(CBPlugin csvFilePlugin, CBConnection csvConnection) {
-		this.plugin = csvFilePlugin;
-		this.connection = csvConnection;
-		this.logger = csvFilePlugin.getLogger();
+	public CBMetadata(CBPlugin cbPlugin, CBConnection cbConnection) {
+		this.plugin = cbPlugin;
+		this.connection = cbConnection;
+		this.logger = cbPlugin.getLogger();
 	}
 
 	@Override
@@ -72,16 +75,49 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 	@Override
 	public List<RecordInfo> getAllRecords() throws MetadataReadException {
 		try {
-			Connection conn = connection.getConnection();
-			if (conn == null || conn.isClosed()) {
-				DatabaseMetaData metadata = conn.getMetaData();
-				ResultSet rs = metadata.getTables(null, null, "%", null);
-				while (rs.next()) {
-					RecordInfo recordInfo = new RecordInfo();
-					recordInfo.setRecordName(rs.getCursorName());
-					// recordInfo.setLabel(rs.g);
-					recordInfo.setCatalogName("Standard Records");
+			Connection jdbcConnection = getJDBCConnection();
+			DatabaseMetaData metadata = jdbcConnection.getMetaData();
+			ResultSet rs = metadata.getTables(null, null, "%", null);
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int metadataColumnNumber = rsmd.getColumnCount();
+			int tableNameIndex = -1;
+			int nameSpaceIndex = -1;
+
+			// Gets the column index for "TABLE_NAME" in a metadata row.
+			for (int mdColumnIndex = 1; mdColumnIndex <= metadataColumnNumber; ++mdColumnIndex) {
+				if (rsmd.getColumnLabel(mdColumnIndex).equals("TABLE_NAME")) {
+					tableNameIndex = mdColumnIndex;
 				}
+				if (rsmd.getColumnLabel(mdColumnIndex).equals("TABLE_SCHEM")) {
+					tableNameIndex = mdColumnIndex;
+				}
+			}
+
+			// If we cannot find the "TABLE_NAME" column, throws an
+			// exception.
+			if (tableNameIndex < 0) {
+				throw new MetadataReadException(
+						"Cannot find the table name field in a metadata row.");
+			}
+
+			// Iterates over all metadata rows and put the name space name
+			// and table name for each metadata row.
+			while (rs.next()) {
+				String nameSpaceName = rs.getString(nameSpaceIndex);
+				String tableName = rs.getString(tableNameIndex);
+
+				// TODO (yingyi): Due to the current limitation of the Simba
+				// JDBC driver, we can not fetch rows for the table "default",
+				// nor for tables outside the "default" name space.
+				if (tableName.equals("default")
+						|| !nameSpaceName.equals("default")) {
+					continue;
+				}
+
+				// Constructs the record info object.
+				RecordInfo recordInfo = new RecordInfo();
+				recordInfo.setCatalogName(nameSpaceName);
+				recordInfo.setInstanceName(tableName);
 			}
 			return lstRecordInfo;
 		} catch (Exception e) {
@@ -89,111 +125,93 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		}
 	}
 
-	@Override
-	public String[][] getDataPreview(RecordInfo recordInfo, int arg1,
-			List<FieldInfo> lstFieldInfo) throws DataPreviewException {
-		String[][] sArrDataPreviewRowData = new String[10][lstFieldInfo.size()];
-		// FieldInfo fieldInfo = null;
-		// List<Field> lstDataPreviewFields = new ArrayList<Field>();
-		// List<Field> lstFields;
-		// try {
-		// lstFields = getFields(recordInfo, false);
-		// for (Field field : lstFields) {
-		// fieldInfo = new FieldInfo();
-		// fieldInfo.setDisplayName(field.getDisplayName());
-		// fieldInfo.setUniqueName(field.getUniqueName());
-		// lstFieldInfo.add(fieldInfo);
-		// lstDataPreviewFields.add(field);
-		// }
-		//
-		// String[] headerLine = csvMapReader.getHeader(true);
-		// Map<String, String> mapNextLine = new HashMap<String, String>();
-		// String[] sArrRow = new String[lstFields.size()];
-		// int iRowCount = 0;
-		// while ((mapNextLine = csvMapReader.read(headerLine)) != null) {
-		// if (iRowCount == 10) {
-		// break;
-		// }
-		// for (int iCount = 0; iCount < lstFields.size(); iCount++) {
-		// sArrRow[iCount] = mapNextLine.get(lstFields.get(iCount)
-		// .getUniqueName());
-		// }
-		// sArrDataPreviewRowData[iRowCount++] = sArrRow.clone();
-		// }
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// logger.logMessage("CSVFileMetadata", "getDataPreview",
-		// ELogMsgLevel.INFO, "Error occured during Data Preview: "
-		// + e.getMessage());
-		// throw new DataPreviewException(
-		// "Error occured during Data Preview: " + e.getMessage());
-		// }
-		return sArrDataPreviewRowData;
+	private Connection getJDBCConnection() throws SQLException,
+			MetadataReadException {
+		Connection jdbcConnection = connection.getConnection();
+		if (jdbcConnection == null || jdbcConnection.isClosed()) {
+			throw new MetadataReadException(
+					"The JDBC connection is unavailable.");
+		}
+		return jdbcConnection;
 	}
 
 	@Override
-	public List<Field> getFields(RecordInfo recordInfo, boolean arg1)
+	public String[][] getDataPreview(RecordInfo recordInfo, int arg1,
+			List<FieldInfo> lstFieldInfo) throws DataPreviewException {
+		String[][] previewRows = new String[20][lstFieldInfo.size()];
+
+		// Gets the name of the table to be reviewed.
+		String tableName = recordInfo.getInstanceName();
+
+		// If no fields to display, return immediately.
+		if (lstFieldInfo.size() == 0) {
+			return previewRows;
+		}
+
+		/**
+		 * Builds the query string.
+		 */
+		StringBuilder queryBuilder = new StringBuilder();
+		queryBuilder.append("select ");
+		int fieldNumber = lstFieldInfo.size();
+		int fieldIndex = 0;
+		for (; fieldIndex < fieldNumber - 1; ++fieldIndex) {
+			queryBuilder.append(lstFieldInfo.get(fieldIndex).getDisplayName());
+			queryBuilder.append(",");
+		}
+		queryBuilder.append(lstFieldInfo.get(fieldIndex).getDisplayName());
+		queryBuilder.append(" from ");
+		queryBuilder.append(tableName);
+		queryBuilder.append(" limit 20");
+
+		/**
+		 * Runs the preview query and put results into the
+		 * sArrDataPreviewRowData array.
+		 */
+		try {
+			Connection jdbcConnection = getJDBCConnection();
+			Statement stmt = jdbcConnection.createStatement();
+			ResultSet rs = stmt.executeQuery(queryBuilder.toString());
+			int rowIndex = 0;
+			while (rs.next()) {
+				for (int columnIndex = 1; columnIndex <= fieldNumber; columnIndex++) {
+					previewRows[rowIndex][columnIndex - 1] = rs
+							.getString(columnIndex);
+				}
+				++rowIndex;
+			}
+		} catch (Exception e) {
+			throw new DataPreviewException(e);
+		}
+		return previewRows;
+	}
+
+	@Override
+	public List<Field> getFields(RecordInfo recordInfo, boolean refreshFields)
 			throws MetadataReadException {
+		// TODO(yingyi): we currently do not support metadata cache, therefore,
+		// we ignore the refreshFields parameter.
 		List<Field> lstFields = new ArrayList<Field>();
-		// try {
-		// FileInputStream fileInputStream = new FileInputStream(
-		// connection.sDirectory + File.separator
-		// + recordInfo.getRecordName() + ".csv");
-		// BufferedReader bufferedReader = new BufferedReader(
-		// new InputStreamReader(fileInputStream,
-		// CBConstants.CHARSET_UTF_8));
-		// CsvPreference csvPreference = new CsvPreference.Builder('"',
-		// connection.sDelimeter.charAt(0), "\r\n").build();
-		// Tokenizer tokenizer = new Tokenizer(bufferedReader, csvPreference);
-		// CsvMapReader csvMapReader = new CsvMapReader(tokenizer,
-		// csvPreference);
-		//
-		// String[] headerLine = csvMapReader.getHeader(true);
-		// for (String sHeader : headerLine) {
-		// Field field = new Field();
-		// field.setContainingRecord(recordInfo);
-		// field.setUniqueName(sHeader);
-		// field.setDisplayName(sHeader);
-		// field.setDescription(sHeader);
-		// field.setLabel(sHeader);
-		// field.setFilterable(false);
-		//
-		// field.setJavaDatatype(JavaDataType.JAVA_STRING);
-		//
-		// AttributeTypeCode attributeTypeCode = AttributeTypeCode.STRING;
-		//
-		// DataType dt = new DataType(attributeTypeCode.getDataTypeName(),
-		// attributeTypeCode.getDataTypeId());
-		// dt.setDefaultPrecision(CBUtils
-		// .getPrecisionForDatatype(attributeTypeCode
-		// .getDataTypeName()));
-		// dt.setDefaultScale(CBUtils
-		// .getScaleForDatatype(attributeTypeCode
-		// .getDataTypeName()));
-		//
-		// field.setPrecision(CBUtils
-		// .getPrecisionForDatatype(attributeTypeCode
-		// .getDataTypeName()));
-		// field.setScale(CBUtils.getScaleForDatatype(attributeTypeCode
-		// .getDataTypeName()));
-		//
-		// field.setDatatype(dt);
-		// lstFields.add(field);
-		// csvMapReader.close();
-		// }
-		// csvMapReader.close();
-		// tokenizer.close();
-		// bufferedReader.close();
-		// fileInputStream.close();
-		//
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// logger.logMessage("CSVFileMetadata", "getFields",
-		// ELogMsgLevel.INFO, "Error occured while reading Metadata: "
-		// + e.getMessage());
-		// throw new MetadataReadException(
-		// "Error occured while reading Metadata: " + e.getMessage());
-		// }
+		try {
+			String nameSpaceName = recordInfo.getCatalogName();
+			String tableName = recordInfo.getInstanceName();
+			Connection jdbcConnection = getJDBCConnection();
+			DatabaseMetaData metadata = jdbcConnection.getMetaData();
+			ResultSet schema = metadata.getColumns(nameSpaceName, null,
+					tableName, null);
+			ResultSetMetaData schemaMetadata = schema.getMetaData();
+			int schemaColumnNumber = schemaMetadata.getColumnCount();
+			while (schema.next()) {
+				for (int schemaFieldIndex = 1; schemaFieldIndex <= schemaColumnNumber; ++schemaFieldIndex) {
+					String columnName = schema.getString(4);
+					Field field = new Field();
+					field.setDisplayName(columnName);
+					field.setLabel(columnName);
+				}
+			}
+		} catch (Exception e) {
+			throw new MetadataReadException(e);
+		}
 		return lstFields;
 	}
 

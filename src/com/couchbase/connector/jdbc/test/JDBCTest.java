@@ -23,15 +23,30 @@ public class JDBCTest {
 		// Establish a connection using the connection // URL
 		Connection connection = DriverManager.getConnection(connectionURL,
 				username, password);
-
+		String[] types = { "TABLE" };
 		DatabaseMetaData metadata = connection.getMetaData();
-		ResultSet rs = metadata.getTables(null, null, "%", null);
+		ResultSet rs = metadata.getTables(null, null, "%", types);
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int columnsNumber = rsmd.getColumnCount();
 		while (rs.next()) {
 			for (int i = 1; i < columnsNumber; i++) {
-				System.out.println(rsmd.getColumnName(i) + ":"
+				System.out.println(rsmd.getColumnLabel(i) + ":"
 						+ rs.getString(i) + " ");
+				// if (rsmd.getColumnLabel(i).equals("TABLE_NAME")) {
+				// if (rs.getString(i).contains("-")
+				// || rs.getString(i).contains("default")) {
+				// continue;
+				// }
+				// System.out.println(rs.getString(i));
+				// ResultSet schema = metadata.getColumns(null, null,
+				// "orders", null);
+				// ResultSetMetaData schemaMetadata = rs.getMetaData();
+				// for (int j = 1; j <= columnsNumber; j++) {
+				// System.out.print(schemaMetadata.getColumnLabel(j) + ":"
+				// + schema.getString(j) + " ");
+				// }
+				// System.out.println();
+				// }
 			}
 			System.out.println();
 		}
@@ -44,8 +59,7 @@ public class JDBCTest {
 		int row = 0;
 		while (rs.next()) {
 			for (int i = 1; i <= columnsNumber; i++) {
-				System.out.print(rsmd.getColumnLabel(i) + ":" + rs.getString(i)
-						+ " ");
+				System.out.print(rs.getString(i) + "|");
 			}
 			System.out.println();
 			row++;
