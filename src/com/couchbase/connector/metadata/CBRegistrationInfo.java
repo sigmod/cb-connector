@@ -1,3 +1,12 @@
+//  Copyright (c) 2014 Couchbase, Inc.
+//  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+//  except in compliance with the License. You may obtain a copy of the License at
+//    http://www.apache.org/licenses/LICENSE-2.0
+//  Unless required by applicable law or agreed to in writing, software distributed under the
+//  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+//  either express or implied. See the License for the specific language governing permissions
+//  and limitations under the License.
+
 package com.couchbase.connector.metadata;
 
 import java.util.ArrayList;
@@ -20,26 +29,28 @@ public class CBRegistrationInfo implements IRegistrationInfo {
 	private ArrayList<ConnectionAttribute> connAttribs;
 	private ITypeSystem cbTypeSystem;
 	private UUID id = UUID.fromString("10d8f7e2-a2cc-11e4-89d3-123b93f75cba");
-	
+
 	@Override
 	public List<ConnectionAttribute> getConnectionAttributes() {
 		if (connAttribs == null) {
 			connAttribs = new ArrayList<ConnectionAttribute>();
-			
-			connAttribs.add(new ConnectionAttribute(CBConstants.CONN_ATTRIB_DIRECTORY,
+
+			connAttribs.add(new ConnectionAttribute(
+					CBConstants.CONN_ATTRIB_DIRECTORY,
 					ConnectionAttributeType.ALPHABET_TYPE
 							| ConnectionAttributeType.NUMERIC_TYPE
 							| ConnectionAttributeType.SYMBOLS_TYPE, null, null,
 					true, CBConstants.CONN_ATTRIB_DIRECTORY_NUMBER));
-			
-			//Configuration parameter for file delimiter
+
+			// Configuration parameter for file delimiter
 			connAttribs.add(new ConnectionAttribute(
 					CBConstants.CONN_ATTRIB_DELIMITER,
 					ConnectionAttributeType.ALPHABET_TYPE
 							| ConnectionAttributeType.NUMERIC_TYPE
-							| ConnectionAttributeType.SYMBOLS_TYPE, CBConstants.DEFAULT_DELIMITER, null,
-					false, CBConstants.CONN_ATTRIB_DELIMITER_NUMBER));
-			
+							| ConnectionAttributeType.SYMBOLS_TYPE,
+					CBConstants.DEFAULT_DELIMITER, null, false,
+					CBConstants.CONN_ATTRIB_DELIMITER_NUMBER));
+
 		}
 		return connAttribs;
 	}
@@ -50,10 +61,10 @@ public class CBRegistrationInfo implements IRegistrationInfo {
 		ArrayList<FieldAttribute> listOfFieldAttrs = new ArrayList<FieldAttribute>();
 		FieldAttribute a = new FieldAttribute();
 
-        a.setName(CBConstants.REQUIRED_LEVEL);
-        a.setDescription("Specifies the data entry requirement level of data entry enforced for the attribute.");
-        listOfFieldAttrs.add(a);
-        
+		a.setName(CBConstants.REQUIRED_LEVEL);
+		a.setDescription("Specifies the data entry requirement level of data entry enforced for the attribute.");
+		listOfFieldAttrs.add(a);
+
 		return listOfFieldAttrs;
 	}
 

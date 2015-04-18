@@ -1,3 +1,12 @@
+//  Copyright (c) 2014 Couchbase, Inc.
+//  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+//  except in compliance with the License. You may obtain a copy of the License at
+//    http://www.apache.org/licenses/LICENSE-2.0
+//  Unless required by applicable law or agreed to in writing, software distributed under the
+//  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+//  either express or implied. See the License for the specific language governing permissions
+//  and limitations under the License.
+
 package com.couchbase.connector.plugin;
 
 import java.util.ArrayList;
@@ -31,10 +40,10 @@ public class CBPlugin implements IPlugin, IExtWrtPlugin {
 	private OperationContext context;
 	private IRead csvReader;
 	private IWrite2 csvWriter;
-	
+
 	@Override
 	public List<Capability> getCapabilities() {
-		List<Capability> lstCapability = 	new	ArrayList<Capability>();
+		List<Capability> lstCapability = new ArrayList<Capability>();
 		lstCapability.add(Capability.SINGLE_OBJECT_READ);
 		lstCapability.add(Capability.SUPPORTS_CREATE_RECORD);
 		lstCapability.add(Capability.EXTENDED_WRITE);
@@ -43,7 +52,7 @@ public class CBPlugin implements IPlugin, IExtWrtPlugin {
 
 	@Override
 	public IConnection getConnection() {
-		if(csvConnection == null){
+		if (csvConnection == null) {
 			csvConnection = new CBConnection();
 		}
 		return csvConnection;
@@ -52,13 +61,13 @@ public class CBPlugin implements IPlugin, IExtWrtPlugin {
 	@Override
 	public IMetadata getMetadata(IConnection conn)
 			throws InitializationException {
-		csvMetadata = new CBMetadata(this, (CBConnection)conn);
+		csvMetadata = new CBMetadata(this, (CBConnection) conn);
 		return csvMetadata;
 	}
 
 	@Override
 	public IRead getReader(IConnection conn) throws InitializationException {
-		csvReader = new CBRead(this, (CBConnection)conn);
+		csvReader = new CBRead(this, (CBConnection) conn);
 		return csvReader;
 	}
 
@@ -88,13 +97,13 @@ public class CBPlugin implements IPlugin, IExtWrtPlugin {
 		this.logger = logger;
 	}
 
-	public ILogger getLogger(){
+	public ILogger getLogger() {
 		return this.logger;
 	}
 
 	@Override
 	public IWrite2 getExtendedWriter(IConnection conn) {
-		csvWriter = new CBWrite(this, (CBConnection)conn);
+		csvWriter = new CBWrite(this, (CBConnection) conn);
 		return csvWriter;
 	}
 }
