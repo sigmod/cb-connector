@@ -53,7 +53,7 @@ public class CBTypeSystem implements ITypeSystem {
 		return nativeDataTypes;	
 	}
 
-	private List<JavaDataType> getJavaDataTypesFor(String dataTypeName) throws Exception {	
+	public List<JavaDataType> getJavaDataTypesFor(String dataTypeName) throws Exception {	
 		ArrayList<JavaDataType> listOfJavaDataTypes = new ArrayList<JavaDataType>();
 		switch(AttributeTypeCode.fromValue(dataTypeName)){
 		case INTEGER:

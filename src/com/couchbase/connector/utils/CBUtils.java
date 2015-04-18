@@ -1,16 +1,8 @@
 package com.couchbase.connector.utils;
 
-import java.util.HashMap;
-
 import com.couchbase.connector.constant.CBConstants;
-import com.couchbase.connector.utils.AttributeTypeCode;
-import com.informatica.cloud.api.adapter.typesystem.JavaDataType;
 
 public class CBUtils {
-
-	private static HashMap<AttributeTypeCode, JavaDataType> mapToolkitToJavaDataTypeConversion = new HashMap<AttributeTypeCode, JavaDataType>();
-	private static HashMap<JavaDataType, AttributeTypeCode> mapJavaToToolkitDataTypeConversion = new HashMap<JavaDataType, AttributeTypeCode>();
-
 	public static int getPrecisionForDatatype(final String datatype) {
 		int precision = 15;
 

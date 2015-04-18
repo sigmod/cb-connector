@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import com.couchbase.connector.connection.CBConnection;
 import com.couchbase.connector.plugin.CBPlugin;
+import com.couchbase.connector.typesystem.CBTypeSystem;
 import com.couchbase.connector.utils.AttributeTypeCode;
 import com.informatica.cloud.api.adapter.common.ELogMsgLevel;
 import com.informatica.cloud.api.adapter.common.ILogger;
@@ -140,10 +141,14 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 			List<FieldInfo> lstFieldInfo) throws DataPreviewException {
 		String[][] previewRows = new String[20][lstFieldInfo.size()];
 
-		// Gets the name of the table to be reviewed.
+		/**
+		 * Gets the name of the table to be reviewed.
+		 */
 		String tableName = recordInfo.getInstanceName();
 
-		// If no fields to display, return immediately.
+		/**
+		 * If no fields to display, return immediately.
+		 */
 		if (lstFieldInfo.size() == 0) {
 			return previewRows;
 		}
@@ -189,6 +194,9 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 	@Override
 	public List<Field> getFields(RecordInfo recordInfo, boolean refreshFields)
 			throws MetadataReadException {
+		CBTypeSystem typeSystem = (CBTypeSystem) plugin.getRegistrationInfo()
+				.getTypeSystem();
+
 		// TODO(yingyi): we currently do not support metadata cache, therefore,
 		// we ignore the refreshFields parameter.
 		List<Field> lstFields = new ArrayList<Field>();
@@ -204,9 +212,14 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 			while (schema.next()) {
 				for (int schemaFieldIndex = 1; schemaFieldIndex <= schemaColumnNumber; ++schemaFieldIndex) {
 					String columnName = schema.getString(4);
+					String typeName = schema.getString(6);
 					Field field = new Field();
 					field.setDisplayName(columnName);
 					field.setLabel(columnName);
+					field.setFilterable(false);
+					List<JavaDataType> candidateJavaTypes = typeSystem
+							.getJavaDataTypesFor(typeName);
+					field.setJavaDatatype(candidateJavaTypes.get(0));
 				}
 			}
 		} catch (Exception e) {
