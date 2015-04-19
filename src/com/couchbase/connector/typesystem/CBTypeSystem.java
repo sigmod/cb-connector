@@ -46,7 +46,7 @@ public class CBTypeSystem implements ITypeSystem {
 	@Override
 	public List<DataType> getNativeDataTypes() {
 		/**
-		 * @returns the datatypes used in the endpoint
+		 * @returns the datatypes used in the SIMBA JDBC driver
 		 */
 		if (nativeDataTypes == null) {
 			nativeDataTypes = new ArrayList<DataType>();
@@ -64,26 +64,31 @@ public class CBTypeSystem implements ITypeSystem {
 	public List<JavaDataType> getJavaDataTypesFor(String dataTypeName)
 			throws Exception {
 		ArrayList<JavaDataType> listOfJavaDataTypes = new ArrayList<JavaDataType>();
-		switch (AttributeTypeCode.fromValue(dataTypeName)) {
-		case INTEGER:
+		
+		switch(AttributeTypeCode.fromValue(dataTypeName)){
+		case ARRAY:
+			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
+			break;
+			
+		case INT:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_INTEGER);
 			listOfJavaDataTypes.add(JavaDataType.JAVA_BIGINTEGER);
+			break;
+			
+		case BIGINT:
+			listOfJavaDataTypes.add(JavaDataType.JAVA_BIGINTEGER);
+			break;
+			
+		case SMALLINT:
+			listOfJavaDataTypes.add(JavaDataType.JAVA_INTEGER);
+			break;
+			
+		case TINYINT:
+			listOfJavaDataTypes.add(JavaDataType.JAVA_INTEGER);
 			break;
 
 		case BOOLEAN:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_BOOLEAN);
-			break;
-
-		case DATE:
-			listOfJavaDataTypes.add(JavaDataType.JAVA_TIMESTAMP);
-			break;
-
-		case DATETIME:
-			listOfJavaDataTypes.add(JavaDataType.JAVA_TIMESTAMP);
-			break;
-
-		case TIME:
-			listOfJavaDataTypes.add(JavaDataType.JAVA_TIMESTAMP);
 			break;
 
 		case DECIMAL:
@@ -95,25 +100,19 @@ public class CBTypeSystem implements ITypeSystem {
 		case STRING:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
 			break;
+			
+		case CHAR:
+			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
+			break;
+			
+		case VARCHAR:
+			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
+			break;
+			
 		case DOUBLE:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_DOUBLE);
 			break;
-		case BINARY:
-			listOfJavaDataTypes.add(JavaDataType.JAVA_BYTES);
-			break;
-		case SHORT:
-			listOfJavaDataTypes.add(JavaDataType.JAVA_SHORT);
-			break;
-		case BIGINT:
-			listOfJavaDataTypes.add(JavaDataType.JAVA_BIGINTEGER);
-			break;
-		case LONG:
-			listOfJavaDataTypes.add(JavaDataType.JAVA_LONG);
-			break;
-		case FLOAT:
-			listOfJavaDataTypes.add(JavaDataType.JAVA_FLOAT);
-			break;
-
+				
 		default:
 			throw new Exception();
 

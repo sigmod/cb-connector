@@ -22,30 +22,29 @@ public class CBUtils {
 	public static int getPrecisionForDatatype(final String datatype) {
 		int precision = 15;
 
-		if (datatype.equalsIgnoreCase(CBConstants.BOOLEAN))
-			precision = 10;
-		else if (datatype.equalsIgnoreCase(CBConstants.STRING))
-			precision = 255;
-		else if (datatype.equalsIgnoreCase(CBConstants.DECIMAL))
-			precision = 28;
-		else if (datatype.equalsIgnoreCase(CBConstants.INTEGER))
-			precision = 10;
-		else if (datatype.equalsIgnoreCase(CBConstants.DATETIME))
-			precision = 26;
-		else if (datatype.equalsIgnoreCase(CBConstants.DATE))
-			precision = 19;
-		else if (datatype.equalsIgnoreCase(CBConstants.BINARY))
-			precision = 10;
-		else if (datatype.equalsIgnoreCase(CBConstants.LONG))
-			precision = 19;
-		else if (datatype.equalsIgnoreCase(CBConstants.SHORT))
-			precision = 10;
-		else if (datatype.equalsIgnoreCase(CBConstants.BIGINT))
-			precision = 19;
-		else if (datatype.equalsIgnoreCase(CBConstants.DOUBLE))
-			precision = 15;
-		else if (datatype.equalsIgnoreCase(CBConstants.FLOAT))
-			precision = 10;
+           //		Array has value similar to the string precision 
+			if (datatype.equalsIgnoreCase(CBConstants.ARRAY))
+				precision = 255;
+			else if (datatype.equalsIgnoreCase(CBConstants.TINYINT))
+		    	precision = 1;
+			else if (datatype.equalsIgnoreCase(CBConstants.BOOLEAN))
+				precision = 10;
+			else if (datatype.equalsIgnoreCase(CBConstants.STRING))
+				precision = 255;
+			else if (datatype.equalsIgnoreCase(CBConstants.CHAR))
+				precision = 255;
+			else if (datatype.equalsIgnoreCase(CBConstants.VARCHAR))
+				precision = 255;
+			else if (datatype.equalsIgnoreCase(CBConstants.DECIMAL))
+				precision = 28;
+			else if (datatype.equalsIgnoreCase(CBConstants.INT))
+				precision = 10;
+			else if (datatype.equalsIgnoreCase(CBConstants.SMALLINT))
+				precision = 5;
+			else if (datatype.equalsIgnoreCase(CBConstants.BIGINT))
+				precision = 19;
+			else if (datatype.equalsIgnoreCase(CBConstants.DOUBLE))
+				precision = 15;
 
 		return precision;
 	}

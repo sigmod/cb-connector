@@ -10,10 +10,9 @@
 package com.couchbase.connector.utils;
 
 public enum AttributeTypeCode {
-	STRING("String", 1), INTEGER("Integer", 2), DOUBLE("Double", 3), BOOLEAN(
-			"Boolean", 4), DATETIME("DateTime", 5), DATE("Date", 6), DECIMAL(
-			"Decimal", 7), BINARY("Binary", 8), TIME("Time", 9), SHORT("Short",
-			10), LONG("Long", 11), BIGINT("BigInteger", 12), FLOAT("Float", 13);
+	ARRAY("Array", 1), BIGINT("BigInteger", 2), BOOLEAN("Boolean", 3), STRING("String", 4),
+	CHAR("Char", 5), DECIMAL("Decimal", 7), DOUBLE("Double",8), INT("Integer", 9), 
+	SMALLINT("SmallInt", 10), TINYINT("TinyInt", 11), VARCHAR("Varchar", 12);
 
 	private String dataTypeName;
 	private int dataTypeId;
