@@ -33,13 +33,12 @@ import com.informatica.cloud.api.adapter.runtime.exception.InitializationExcepti
 
 public class CBPlugin implements IPlugin, IExtWrtPlugin {
 
-	private IRegistrationInfo csvRegInfo;
-	private IConnection csvConnection;
-	private IMetadata csvMetadata;
+	private IRegistrationInfo cbRegInfo;
+	private IConnection cbConnection;
+	private IMetadata cbMetadata;
 	private ILogger logger;
-	private OperationContext context;
-	private IRead csvReader;
-	private IWrite2 csvWriter;
+	private IRead cbReader;
+	private IWrite2 cbWriter;
 
 	@Override
 	public List<Capability> getCapabilities() {
@@ -52,29 +51,29 @@ public class CBPlugin implements IPlugin, IExtWrtPlugin {
 
 	@Override
 	public IConnection getConnection() {
-		if (csvConnection == null) {
-			csvConnection = new CBConnection();
+		if (cbConnection == null) {
+			cbConnection = new CBConnection();
 		}
-		return csvConnection;
+		return cbConnection;
 	}
 
 	@Override
 	public IMetadata getMetadata(IConnection conn)
 			throws InitializationException {
-		csvMetadata = new CBMetadata(this, (CBConnection) conn);
-		return csvMetadata;
+		cbMetadata = new CBMetadata(this, (CBConnection) conn);
+		return cbMetadata;
 	}
 
 	@Override
 	public IRead getReader(IConnection conn) throws InitializationException {
-		csvReader = new CBRead(this, (CBConnection) conn);
-		return csvReader;
+		cbReader = new CBRead(this, (CBConnection) conn);
+		return cbReader;
 	}
 
 	@Override
 	public IRegistrationInfo getRegistrationInfo() {
-		csvRegInfo = new CBRegistrationInfo();
-		return csvRegInfo;
+		cbRegInfo = new CBRegistrationInfo();
+		return cbRegInfo;
 	}
 
 	@Override
@@ -89,7 +88,7 @@ public class CBPlugin implements IPlugin, IExtWrtPlugin {
 
 	@Override
 	public void setContext(OperationContext context) {
-		this.context = context;
+
 	}
 
 	@Override
@@ -103,7 +102,7 @@ public class CBPlugin implements IPlugin, IExtWrtPlugin {
 
 	@Override
 	public IWrite2 getExtendedWriter(IConnection conn) {
-		csvWriter = new CBWrite(this, (CBConnection) conn);
-		return csvWriter;
+		cbWriter = new CBWrite(this, (CBConnection) conn);
+		return cbWriter;
 	}
 }
