@@ -81,6 +81,7 @@ public class CBPlugin implements IPlugin, IExtWrtPlugin {
 		return new PluginVersion(1, 0, 1);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public IWrite getWriter(IConnection conn) throws InitializationException {
 		throw new UnsupportedOperationException();
