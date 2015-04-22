@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
 
 import com.couchbase.connector.connection.CBConnection;
 import com.couchbase.connector.plugin.CBPlugin;
-import com.couchbase.connector.typesystem.CBTypeSystem;
 import com.couchbase.connector.utils.AttributeTypeCode;
 import com.informatica.cloud.api.adapter.common.ELogMsgLevel;
 import com.informatica.cloud.api.adapter.common.ILogger;
@@ -39,6 +38,7 @@ import com.informatica.cloud.api.adapter.metadata.MetadataReadException;
 import com.informatica.cloud.api.adapter.metadata.RecordInfo;
 import com.informatica.cloud.api.adapter.metadata.Relationship;
 import com.informatica.cloud.api.adapter.typesystem.DataType;
+import com.informatica.cloud.api.adapter.typesystem.ITypeSystem;
 import com.informatica.cloud.api.adapter.typesystem.JavaDataType;
 
 public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
@@ -203,9 +203,7 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 	@Override
 	public List<Field> getFields(RecordInfo recordInfo, boolean refreshFields)
 			throws MetadataReadException {
-		CBTypeSystem typeSystem = (CBTypeSystem) plugin.getRegistrationInfo()
-				.getTypeSystem();
-
+		ITypeSystem typeSystem = plugin.getRegistrationInfo().getTypeSystem();
 		// TODO(yingyi): we currently do not support metadata cache, therefore,
 		// we ignore the refreshFields parameter.
 		List<Field> lstFields = new ArrayList<Field>();
@@ -223,13 +221,14 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 				field.setDisplayName(columnName);
 				field.setLabel(columnName);
 				field.setFilterable(false);
-				List<JavaDataType> candidateJavaTypes = typeSystem
-						.getJavaDataTypesFor(typeName);
-				field.setJavaDatatype(candidateJavaTypes.get(0));
 				AttributeTypeCode typeCode = AttributeTypeCode
-						.valueOf(columnName);
-				field.setDatatype(new DataType(typeCode.name(), typeCode
-						.ordinal()));
+						.valueOf(typeName);
+				DataType nativeType = new DataType(typeCode.name(),
+						typeCode.ordinal());
+				field.setDatatype(nativeType);
+				List<JavaDataType> candidateJavaTypes = typeSystem
+						.getDatatypeMapping().get(nativeType);
+				field.setJavaDatatype(candidateJavaTypes.get(0));
 			}
 		} catch (Exception e) {
 			throw new MetadataReadException(e);

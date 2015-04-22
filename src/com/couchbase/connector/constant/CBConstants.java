@@ -10,17 +10,10 @@
 package com.couchbase.connector.constant;
 
 public class CBConstants {
-	
-	public final static String ARRAY = "ARRAY";
-	public final static String BIGINT = "BigInteger";
-	public final static String BOOLEAN = "BOOLEAN";
-	public final static String STRING = "STRING";
-	public final static String CHAR = "CHAR";
-	public final static String DECIMAL = "DECIMAL";
-	public final static String DOUBLE = "DOUBLE";
-	public final static String INT = "INTEGER";
-	public final static String SMALLINT = "SmallInt";
-	public final static String TINYINT = "TinyInt";
-    public final static String VARCHAR = "VARCHAR";
-	
+
+	public static final String PLUGIN_SHORT_NAME = "Couchbase";
+	public static final String PLUGIN_DESC = "This is the Couchbase connector that connects to a Couchbase server.";
+	public static final String PLUGIN_NAME = "Couchbase";
+	public static final String REQUIRED_LEVEL = "Required Level";
+
 }

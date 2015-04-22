@@ -16,7 +16,7 @@ import java.util.UUID;
 import com.couchbase.connector.constant.CBConstants;
 import com.couchbase.connector.typesystem.CBTypeSystem;
 import com.informatica.cloud.api.adapter.connection.ConnectionAttribute;
-import com.informatica.cloud.api.adapter.connection.ConnectionAttributeType;
+import com.informatica.cloud.api.adapter.connection.StandardAttributes;
 import com.informatica.cloud.api.adapter.metadata.FieldAttribute;
 import com.informatica.cloud.api.adapter.metadata.IRegistrationInfo;
 import com.informatica.cloud.api.adapter.metadata.MetadataReadException;
@@ -34,23 +34,9 @@ public class CBRegistrationInfo implements IRegistrationInfo {
 	public List<ConnectionAttribute> getConnectionAttributes() {
 		if (connAttribs == null) {
 			connAttribs = new ArrayList<ConnectionAttribute>();
-
-			connAttribs.add(new ConnectionAttribute(
-					CBConstants.CONN_ATTRIB_DIRECTORY,
-					ConnectionAttributeType.ALPHABET_TYPE
-							| ConnectionAttributeType.NUMERIC_TYPE
-							| ConnectionAttributeType.SYMBOLS_TYPE, null, null,
-					true, CBConstants.CONN_ATTRIB_DIRECTORY_NUMBER));
-
-			// Configuration parameter for file delimiter
-			connAttribs.add(new ConnectionAttribute(
-					CBConstants.CONN_ATTRIB_DELIMITER,
-					ConnectionAttributeType.ALPHABET_TYPE
-							| ConnectionAttributeType.NUMERIC_TYPE
-							| ConnectionAttributeType.SYMBOLS_TYPE,
-					CBConstants.DEFAULT_DELIMITER, null, false,
-					CBConstants.CONN_ATTRIB_DELIMITER_NUMBER));
-
+			connAttribs.add(StandardAttributes.connectionUrl);
+			connAttribs.add(StandardAttributes.username);
+			connAttribs.add(StandardAttributes.password);
 		}
 		return connAttribs;
 	}
@@ -60,11 +46,9 @@ public class CBRegistrationInfo implements IRegistrationInfo {
 			throws MetadataReadException {
 		ArrayList<FieldAttribute> listOfFieldAttrs = new ArrayList<FieldAttribute>();
 		FieldAttribute a = new FieldAttribute();
-
 		a.setName(CBConstants.REQUIRED_LEVEL);
 		a.setDescription("Specifies the data entry requirement level of data entry enforced for the attribute.");
 		listOfFieldAttrs.add(a);
-
 		return listOfFieldAttrs;
 	}
 

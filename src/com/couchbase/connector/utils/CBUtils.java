@@ -9,45 +9,56 @@
 
 package com.couchbase.connector.utils;
 
-import com.couchbase.connector.constant.CBConstants;
-
 public class CBUtils {
-	public static int getPrecisionForDatatype(final String datatype) {
+	public static int getPrecisionForDatatype(final String typeName) {
 		int precision = 15;
-		
-	//	Array has value similar to the string precision 
-		if (datatype.equalsIgnoreCase(CBConstants.ARRAY))
+		switch (AttributeTypeCode.valueOf(typeName)) {
+		case ARRAY:
 			precision = 255;
-		else if (datatype.equalsIgnoreCase(CBConstants.TINYINT))
-	    	precision = 1;
-		else if (datatype.equalsIgnoreCase(CBConstants.BOOLEAN))
+			break;
+		case TINYINT:
+			precision = 1;
+			break;
+		case BOOLEAN:
 			precision = 10;
-		else if (datatype.equalsIgnoreCase(CBConstants.STRING))
+			break;
+		case STRING:
 			precision = 255;
-		else if (datatype.equalsIgnoreCase(CBConstants.CHAR))
+			break;
+		case CHAR:
 			precision = 255;
-		else if (datatype.equalsIgnoreCase(CBConstants.VARCHAR))
+			break;
+		case VARCHAR:
 			precision = 255;
-		else if (datatype.equalsIgnoreCase(CBConstants.DECIMAL))
+			break;
+		case DECIMAL:
 			precision = 28;
-		else if (datatype.equalsIgnoreCase(CBConstants.INT))
+			break;
+		case INT:
 			precision = 10;
-		else if (datatype.equalsIgnoreCase(CBConstants.SMALLINT))
+			break;
+		case SMALLINT:
 			precision = 5;
-		else if (datatype.equalsIgnoreCase(CBConstants.BIGINT))
+			break;
+		case BIGINT:
 			precision = 19;
-		else if (datatype.equalsIgnoreCase(CBConstants.DOUBLE))
+			break;
+		case DOUBLE:
 			precision = 15;
-		
+			break;
+		default:
+			throw new IllegalStateException("Unknown type: " + typeName);
+		}
 		return precision;
 	}
 
-	public static int getScaleForDatatype(final String datatype) {
+	public static int getScaleForDatatype(final String typeName) {
 		int iScale = 0;
 
-		if (datatype.equalsIgnoreCase("DECIMAL"))
+		AttributeTypeCode type = AttributeTypeCode.valueOf(typeName);
+		if (type == AttributeTypeCode.DECIMAL)
 			iScale = 10;
-		else if (datatype.equalsIgnoreCase("DOUBLE"))
+		else if (type == AttributeTypeCode.DOUBLE)
 			iScale = 5;
 
 		return iScale;
