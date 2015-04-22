@@ -39,28 +39,28 @@ public class JDBCTest {
 		int columnsNumber = rsmd.getColumnCount();
 		while (rs.next()) {
 			for (int i = 1; i < columnsNumber; i++) {
-				System.out.println(rsmd.getColumnLabel(i) + ":"
-						+ rs.getString(i) + " ");
-				// if (rsmd.getColumnLabel(i).equals("TABLE_NAME")) {
-				// if (rs.getString(i).contains("-")
-				// || rs.getString(i).contains("default")) {
-				// continue;
-				// }
-				// System.out.println(rs.getString(i));
-				// ResultSet schema = metadata.getColumns(null, null,
-				// "orders", null);
-				// ResultSetMetaData schemaMetadata = rs.getMetaData();
-				// for (int j = 1; j <= columnsNumber; j++) {
-				// System.out.print(schemaMetadata.getColumnLabel(j) + ":"
-				// + schema.getString(j) + " ");
-				// }
-				// System.out.println();
-				// }
+				if (rsmd.getColumnLabel(i).equals("TABLE_NAME")) {
+					String tableName = rs.getString(i);
+					if (tableName.contains("-")
+							|| tableName.contains("default")) {
+						continue;
+					}
+					ResultSet schema = metadata.getColumns(null, null,
+							tableName, null);
+					ResultSetMetaData schemaMetadata = schema.getMetaData();
+					while (schema.next()) {
+						for (int j = 1; j <= schemaMetadata.getColumnCount(); j++) {
+							System.out.print(schemaMetadata.getColumnLabel(j)
+									+ ":" + schema.getString(j) + "|");
+						}
+					}
+					System.out.println();
+				}
 			}
 			System.out.println();
 		}
 
-		String query = "select * from product";
+		String query = "select top 1 * from orders";
 		Statement stmt = connection.createStatement();
 		rs = stmt.executeQuery(query);
 		rsmd = rs.getMetaData();
@@ -68,7 +68,8 @@ public class JDBCTest {
 		int row = 0;
 		while (rs.next()) {
 			for (int i = 1; i <= columnsNumber; i++) {
-				System.out.print(rs.getString(i) + "|");
+				System.out.print(rsmd.getColumnLabel(i) + ":" + rs.getString(i)
+						+ "|");
 			}
 			System.out.println();
 			row++;
