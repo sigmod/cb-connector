@@ -216,20 +216,20 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 			DatabaseMetaData metadata = jdbcConnection.getMetaData();
 			ResultSet schema = metadata.getColumns(nameSpaceName, null,
 					tableName, null);
-			ResultSetMetaData schemaMetadata = schema.getMetaData();
-			int schemaColumnNumber = schemaMetadata.getColumnCount();
 			while (schema.next()) {
-				for (int schemaFieldIndex = 1; schemaFieldIndex <= schemaColumnNumber; ++schemaFieldIndex) {
-					String columnName = schema.getString(4);
-					String typeName = schema.getString(6);
-					Field field = new Field();
-					field.setDisplayName(columnName);
-					field.setLabel(columnName);
-					field.setFilterable(false);
-					List<JavaDataType> candidateJavaTypes = typeSystem
-							.getJavaDataTypesFor(typeName);
-					field.setJavaDatatype(candidateJavaTypes.get(0));
-				}
+				String columnName = schema.getString(4);
+				String typeName = schema.getString(6);
+				Field field = new Field();
+				field.setDisplayName(columnName);
+				field.setLabel(columnName);
+				field.setFilterable(false);
+				List<JavaDataType> candidateJavaTypes = typeSystem
+						.getJavaDataTypesFor(typeName);
+				field.setJavaDatatype(candidateJavaTypes.get(0));
+				AttributeTypeCode typeCode = AttributeTypeCode
+						.valueOf(columnName);
+				field.setDatatype(new DataType(typeCode.name(), typeCode
+						.ordinal()));
 			}
 		} catch (Exception e) {
 			throw new MetadataReadException(e);
@@ -283,8 +283,8 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		f.setUniqueName("ErrorMessage");
 		f.setDisplayName("ErrorMessage");
 		f.setLabel("ErrorMessage");
-		f.setDatatype(new DataType(AttributeTypeCode.STRING.getDataTypeName(),
-				AttributeTypeCode.STRING.getDataTypeId()));
+		f.setDatatype(new DataType(AttributeTypeCode.STRING.name(),
+				AttributeTypeCode.STRING.ordinal()));
 		f.setJavaDatatype(JavaDataType.JAVA_STRING);
 		f.setPrecision(200);
 		field.add(f);

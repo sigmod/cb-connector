@@ -53,6 +53,7 @@ public class JDBCTest {
 							System.out.print(schemaMetadata.getColumnLabel(j)
 									+ ":" + schema.getString(j) + "|");
 						}
+						System.out.println();
 					}
 					System.out.println();
 				}

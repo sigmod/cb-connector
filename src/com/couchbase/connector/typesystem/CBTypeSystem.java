@@ -51,8 +51,8 @@ public class CBTypeSystem implements ITypeSystem {
 		if (nativeDataTypes == null) {
 			nativeDataTypes = new ArrayList<DataType>();
 			for (AttributeTypeCode type : AttributeTypeCode.values()) {
-				int id = type.getDataTypeId();
-				String name = type.getDataTypeName();
+				int id = type.ordinal();
+				String name = type.name();
 				DataType dt = new DataType(name, id);
 				dt.setDefaultPrecision(CBUtils.getPrecisionForDatatype(name));
 				nativeDataTypes.add(dt);
@@ -64,25 +64,25 @@ public class CBTypeSystem implements ITypeSystem {
 	public List<JavaDataType> getJavaDataTypesFor(String dataTypeName)
 			throws Exception {
 		ArrayList<JavaDataType> listOfJavaDataTypes = new ArrayList<JavaDataType>();
-		
-		switch(AttributeTypeCode.fromValue(dataTypeName)){
+
+		switch (AttributeTypeCode.valueOf(dataTypeName)) {
 		case ARRAY:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
 			break;
-			
+
 		case INT:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_INTEGER);
 			listOfJavaDataTypes.add(JavaDataType.JAVA_BIGINTEGER);
 			break;
-			
+
 		case BIGINT:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_BIGINTEGER);
 			break;
-			
+
 		case SMALLINT:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_INTEGER);
 			break;
-			
+
 		case TINYINT:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_INTEGER);
 			break;
@@ -100,19 +100,19 @@ public class CBTypeSystem implements ITypeSystem {
 		case STRING:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
 			break;
-			
+
 		case CHAR:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
 			break;
-			
+
 		case VARCHAR:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
 			break;
-			
+
 		case DOUBLE:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_DOUBLE);
 			break;
-				
+
 		default:
 			throw new Exception();
 
