@@ -23,7 +23,7 @@ import com.informatica.cloud.api.adapter.plugin.InvalidArgumentException;
 public class CBConnection implements IConnection {
 
 	// Define a string as the fully qualified class name
-	private static String jdbcDriver = "com.simba.couchbase.jdbc4.Driver";
+	private static String jdbcDriver = "com.simba.couchbase.jdbc41.Driver";
 
 	// Connection attributes, the key-values are passed from the Informatica
 	// framework
@@ -38,9 +38,11 @@ public class CBConnection implements IConnection {
 		if (connAttribs != null && !connAttribs.isEmpty()
 				&& connAttribs.size() > 0) {
 			String connectionURL = connAttribs
-					.get(StandardAttributes.connectionUrl);
-			String userName = connAttribs.get(StandardAttributes.username);
-			String password = connAttribs.get(StandardAttributes.password);
+					.get(StandardAttributes.connectionUrl.getName());
+			String userName = connAttribs.get(StandardAttributes.username
+					.getName());
+			String password = connAttribs.get(StandardAttributes.password
+					.getName());
 
 			// Check connection parameters
 			if (connectionURL == null || userName == null || password == null) {
@@ -60,9 +62,14 @@ public class CBConnection implements IConnection {
 			} catch (Exception e) {
 				throw new ConnectionFailedException(e);
 			}
+
+			// Reaching here without exceptions means the connection is
+			// established.
+			return true;
+		} else {
+			// The connection attribute map is missing or empty.
+			return false;
 		}
-		// Reaching here without exceptions means the connection is established.
-		return true;
 	}
 
 	@Override

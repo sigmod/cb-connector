@@ -99,7 +99,7 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 					tableNameIndex = mdColumnIndex;
 				}
 				if (rsmd.getColumnLabel(mdColumnIndex).equals("TABLE_SCHEM")) {
-					tableNameIndex = mdColumnIndex;
+					nameSpaceIndex = mdColumnIndex;
 				}
 			}
 
@@ -128,6 +128,7 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 				RecordInfo recordInfo = new RecordInfo();
 				recordInfo.setCatalogName(nameSpaceName);
 				recordInfo.setInstanceName(tableName);
+				lstRecordInfo.add(recordInfo);
 			}
 			return lstRecordInfo;
 		} catch (Exception e) {
@@ -212,7 +213,7 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 			String tableName = recordInfo.getInstanceName();
 			Connection jdbcConnection = getJDBCConnection();
 			DatabaseMetaData metadata = jdbcConnection.getMetaData();
-			ResultSet schema = metadata.getColumns(nameSpaceName, null,
+			ResultSet schema = metadata.getColumns(null, nameSpaceName,
 					tableName, null);
 			while (schema.next()) {
 				String columnName = schema.getString(4);
@@ -229,6 +230,7 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 				List<JavaDataType> candidateJavaTypes = typeSystem
 						.getDatatypeMapping().get(nativeType);
 				field.setJavaDatatype(candidateJavaTypes.get(0));
+				lstFields.add(field);
 			}
 		} catch (Exception e) {
 			throw new MetadataReadException(e);

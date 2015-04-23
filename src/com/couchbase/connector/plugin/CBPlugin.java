@@ -31,6 +31,7 @@ import com.informatica.cloud.api.adapter.runtime.IWrite;
 import com.informatica.cloud.api.adapter.runtime.IWrite2;
 import com.informatica.cloud.api.adapter.runtime.exception.InitializationException;
 
+@SuppressWarnings("deprecation")
 public class CBPlugin implements IPlugin, IExtWrtPlugin {
 
 	private IRegistrationInfo cbRegInfo;
@@ -81,7 +82,6 @@ public class CBPlugin implements IPlugin, IExtWrtPlugin {
 		return new PluginVersion(1, 0, 1);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public IWrite getWriter(IConnection conn) throws InitializationException {
 		throw new UnsupportedOperationException();

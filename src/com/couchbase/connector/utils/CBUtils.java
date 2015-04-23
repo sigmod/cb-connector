@@ -35,6 +35,7 @@ public class CBUtils {
 			precision = 28;
 			break;
 		case INT:
+		case INTEGER:
 			precision = 10;
 			break;
 		case SMALLINT:
@@ -45,6 +46,9 @@ public class CBUtils {
 			break;
 		case DOUBLE:
 			precision = 15;
+			break;
+		case OBJECT:
+			precision = 255;
 			break;
 		default:
 			throw new IllegalStateException("Unknown type: " + typeName);

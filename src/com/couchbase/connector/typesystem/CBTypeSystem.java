@@ -64,13 +64,14 @@ public class CBTypeSystem implements ITypeSystem {
 	public List<JavaDataType> getJavaDataTypesFor(String dataTypeName)
 			throws Exception {
 		ArrayList<JavaDataType> listOfJavaDataTypes = new ArrayList<JavaDataType>();
-
-		switch (AttributeTypeCode.valueOf(dataTypeName)) {
+		AttributeTypeCode type = AttributeTypeCode.valueOf(dataTypeName);
+		switch (type) {
 		case ARRAY:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
 			break;
 
 		case INT:
+		case INTEGER:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_INTEGER);
 			listOfJavaDataTypes.add(JavaDataType.JAVA_BIGINTEGER);
 			break;
@@ -98,6 +99,7 @@ public class CBTypeSystem implements ITypeSystem {
 			break;
 
 		case STRING:
+		case OBJECT:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
 			break;
 
@@ -114,7 +116,7 @@ public class CBTypeSystem implements ITypeSystem {
 			break;
 
 		default:
-			throw new Exception();
+			throw new IllegalStateException("Unknown type: " + type);
 
 		}
 		return listOfJavaDataTypes;
