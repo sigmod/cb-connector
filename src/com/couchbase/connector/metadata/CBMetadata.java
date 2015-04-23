@@ -149,7 +149,8 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 	@Override
 	public String[][] getDataPreview(RecordInfo recordInfo, int arg1,
 			List<FieldInfo> lstFieldInfo) throws DataPreviewException {
-		String[][] previewRows = new String[20][lstFieldInfo.size()];
+		int fieldNumber = lstFieldInfo.size();
+		List<String[]> previewRows = new ArrayList<String[]>();
 
 		/**
 		 * Gets the name of the table to be reviewed.
@@ -160,24 +161,16 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		 * If no fields to display, return immediately.
 		 */
 		if (lstFieldInfo.size() == 0) {
-			return previewRows;
+			return new String[0][0];
 		}
 
 		/**
 		 * Builds the query string.
 		 */
 		StringBuilder queryBuilder = new StringBuilder();
-		queryBuilder.append("select ");
-		int fieldNumber = lstFieldInfo.size();
-		int fieldIndex = 0;
-		for (; fieldIndex < fieldNumber - 1; ++fieldIndex) {
-			queryBuilder.append(lstFieldInfo.get(fieldIndex).getDisplayName());
-			queryBuilder.append(",");
-		}
-		queryBuilder.append(lstFieldInfo.get(fieldIndex).getDisplayName());
-		queryBuilder.append(" from ");
+		queryBuilder.append("select top 20 * from `");
 		queryBuilder.append(tableName);
-		queryBuilder.append(" limit 20");
+		queryBuilder.append("`");
 
 		/**
 		 * Runs the preview query and put results into the
@@ -186,19 +179,25 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		try {
 			Connection jdbcConnection = getJDBCConnection();
 			Statement stmt = jdbcConnection.createStatement();
+			System.out.println(queryBuilder);
 			ResultSet rs = stmt.executeQuery(queryBuilder.toString());
-			int rowIndex = 0;
 			while (rs.next()) {
+				String[] previewRow = new String[fieldNumber];
+				String fieldValue = "null";
 				for (int columnIndex = 1; columnIndex <= fieldNumber; columnIndex++) {
-					previewRows[rowIndex][columnIndex - 1] = rs
-							.getString(columnIndex);
+					try {
+						fieldValue = rs.getString(columnIndex);
+					} catch (Exception aoe) {
+						fieldValue = "null";
+					}
+					previewRow[columnIndex - 1] = fieldValue;
 				}
-				++rowIndex;
+				previewRows.add(previewRow);
 			}
 		} catch (Exception e) {
 			throw new DataPreviewException(e);
 		}
-		return previewRows;
+		return previewRows.toArray(new String[previewRows.size()][fieldNumber]);
 	}
 
 	@Override

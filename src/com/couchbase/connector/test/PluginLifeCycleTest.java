@@ -9,6 +9,7 @@
 
 package com.couchbase.connector.test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import com.couchbase.connector.plugin.CBPlugin;
 import com.informatica.cloud.api.adapter.connection.IConnection;
 import com.informatica.cloud.api.adapter.connection.StandardAttributes;
 import com.informatica.cloud.api.adapter.metadata.Field;
+import com.informatica.cloud.api.adapter.metadata.FieldInfo;
 import com.informatica.cloud.api.adapter.metadata.IMetadata;
 import com.informatica.cloud.api.adapter.metadata.RecordInfo;
 
@@ -67,10 +69,40 @@ public class PluginLifeCycleTest {
 				System.out.print(field.getDisplayName() + ":"
 						+ field.getDatatype().getName() + "|");
 			}
+			System.out.println("preview ");
+
+			String[][] preview = metadata.getDataPreview(record, 200,
+					toFieldInfoList(fields));
+			for (int row = 0; row < preview.length; ++row) {
+				for (String fieldValue : preview[row]) {
+					System.out.print(fieldValue.toString() + "|");
+				}
+				System.out.println();
+			}
 			System.out.println();
 		}
 
+		// Closes the connection
 		connection.disconnect();
+		if (connection.validate()) {
+			throw new IllegalStateException(
+					"Connection has not been successfully closed.");
+		}
+	}
+
+	/**
+	 * Returns a FieldInfo list for an input Field list.
+	 * 
+	 * @param fields
+	 *            a list of Field object
+	 * @return a list of FieldInfo object
+	 */
+	private List<FieldInfo> toFieldInfoList(List<Field> fields) {
+		List<FieldInfo> fieldInfoList = new ArrayList<FieldInfo>();
+		for (Field field : fields) {
+			fieldInfoList.add(field.getFieldInfo());
+		}
+		return fieldInfoList;
 	}
 
 }

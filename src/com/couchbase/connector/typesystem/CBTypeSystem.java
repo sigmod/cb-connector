@@ -100,6 +100,7 @@ public class CBTypeSystem implements ITypeSystem {
 
 		case STRING:
 		case OBJECT:
+		case NULL:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
 			break;
 

@@ -23,6 +23,8 @@ public class CBUtils {
 			precision = 10;
 			break;
 		case STRING:
+		case OBJECT:
+		case NULL:
 			precision = 255;
 			break;
 		case CHAR:
@@ -46,9 +48,6 @@ public class CBUtils {
 			break;
 		case DOUBLE:
 			precision = 15;
-			break;
-		case OBJECT:
-			precision = 255;
 			break;
 		default:
 			throw new IllegalStateException("Unknown type: " + typeName);
