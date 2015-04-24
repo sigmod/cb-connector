@@ -32,7 +32,7 @@
     </target>
 
 	<target name="compile" depends="init" description="Compile all source code. Output goes to ${dir.bin}">
-		<javac srcdir="${dir.src}" destdir="${dir.bin}"	listfiles="yes"	includes="com/informatica/**" debug="true" debuglevel="${debuglevel}">
+		<javac srcdir="${dir.src}" destdir="${dir.bin}"	listfiles="yes"	includes="com/couchbase/**" debug="true" debuglevel="${debuglevel}">
 			<classpath>
 				<path refid="cloud-adapter.classpath"/>
 			</classpath>
@@ -44,7 +44,7 @@
 
     <target name="cb-connector.jar" description="Builds the jar in ${dir.dist} for the Couchbase connector." depends="compile">
     	<echo message="${ant.project.name}: ${ant.file}"/>
-    	<jar basedir="${dir.bin}" includes="com/informatica/**" defaultexcludes="true" jarfile="${dir.dist}/cb-connector.jar">
+    	<jar basedir="${dir.bin}" includes="com/couchbase/**" defaultexcludes="true" jarfile="${dir.dist}/cb-connector.jar">
     		<service type="com.informatica.cloud.api.adapter.plugin.IPlugin" provider="com.couchbase.connector.plugin.CBPlugin" />
     	</jar>
     </target>
@@ -61,8 +61,7 @@
 				</fileset>
 	   			
 				<fileset dir="${dir.res}">    			
-	   				<include name="SuperCSV-LICENSE"/> 
-	   				<include name="SuperCSV-NOTICE"/> 
+	   				<include name="SimbaJDBCDriverforCouchbase.lic"/>
 				</fileset>
 				
 	   			<fileset dir="${dir.dist}">    			
