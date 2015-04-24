@@ -149,7 +149,6 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 	@Override
 	public String[][] getDataPreview(RecordInfo recordInfo, int arg1,
 			List<FieldInfo> lstFieldInfo) throws DataPreviewException {
-		int fieldNumber = lstFieldInfo.size();
 		List<String[]> previewRows = new ArrayList<String[]>();
 
 		/**
@@ -179,9 +178,9 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		try {
 			Connection jdbcConnection = getJDBCConnection();
 			Statement stmt = jdbcConnection.createStatement();
-			System.out.println(queryBuilder);
 			ResultSet rs = stmt.executeQuery(queryBuilder.toString());
 			while (rs.next()) {
+				int fieldNumber = rs.getMetaData().getColumnCount();
 				String[] previewRow = new String[fieldNumber];
 				String fieldValue = "null";
 				for (int columnIndex = 1; columnIndex <= fieldNumber; columnIndex++) {
@@ -197,7 +196,7 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		} catch (Exception e) {
 			throw new DataPreviewException(e);
 		}
-		return previewRows.toArray(new String[previewRows.size()][fieldNumber]);
+		return previewRows.toArray(new String[0][]);
 	}
 
 	@Override
