@@ -167,7 +167,12 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		 * Builds the query string.
 		 */
 		StringBuilder queryBuilder = new StringBuilder();
-		queryBuilder.append("select top 20 * from `");
+		queryBuilder.append("select top 20 ");
+		for (FieldInfo field : lstFieldInfo) {
+			queryBuilder.append("`" + field.getDisplayName() + "`, ");
+		}
+		queryBuilder.delete(queryBuilder.length() - 2, queryBuilder.length());
+		queryBuilder.append(" from `");
 		queryBuilder.append(tableName);
 		queryBuilder.append("`");
 

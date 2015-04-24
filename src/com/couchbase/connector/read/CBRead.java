@@ -90,6 +90,9 @@ public class CBRead implements IRead {
 			throws ConnectionFailedException, ReflectiveOperationException,
 			ReadException, DataConversionException, FatalRuntimeException {
 		boolean bStatus = false;
+		if (fieldList.size() == 0) {
+			return bStatus;
+		}
 		if (outputDataBuffer != null) {
 			/**
 			 * Gets the name of the table to be reviewed.
@@ -100,10 +103,17 @@ public class CBRead implements IRead {
 			 * Builds the query string.
 			 */
 			StringBuilder queryBuilder = new StringBuilder();
-			queryBuilder.append("select * from `");
+			queryBuilder.append("select ");
+			for (Field field : fieldList) {
+				queryBuilder.append("`" + field.getDisplayName() + "`, ");
+			}
+			queryBuilder.delete(queryBuilder.length() - 2,
+					queryBuilder.length());
+			queryBuilder.append(" from `");
 			queryBuilder.append(tableName);
 			queryBuilder.append("`");
 
+			System.out.println(queryBuilder.toString());
 			/**
 			 * Runs the select * query and put results into the
 			 * sArrDataPreviewRowData array.
@@ -147,11 +157,13 @@ public class CBRead implements IRead {
 						} catch (Exception aoe) {
 							fieldValue = null;
 						}
-						row[columnIndex] = fieldValue;
+						row[columnIndex - 1] = fieldValue;
 					}
 					outputDataBuffer.setData(row);
 				}
+				bStatus = true;
 			} catch (Exception e) {
+				e.printStackTrace();
 				logger.logMessage("JDBC connection error", "",
 						ELogMsgLevel.ERROR, e.getLocalizedMessage());
 				throw new FatalRuntimeException(e);
@@ -189,6 +201,13 @@ public class CBRead implements IRead {
 
 	}
 
+	/**
+	 * Gets the JDBC connection from the IConnection instance.
+	 * 
+	 * @return the SQL JDBC connection.
+	 * @throws SQLException
+	 * @throws MetadataReadException
+	 */
 	private Connection getJDBCConnection() throws SQLException,
 			MetadataReadException {
 		Connection jdbcConnection = connection.getConnection();

@@ -23,6 +23,8 @@ import com.informatica.cloud.api.adapter.metadata.Field;
 import com.informatica.cloud.api.adapter.metadata.FieldInfo;
 import com.informatica.cloud.api.adapter.metadata.IMetadata;
 import com.informatica.cloud.api.adapter.metadata.RecordInfo;
+import com.informatica.cloud.api.adapter.runtime.IRead;
+import com.informatica.cloud.api.adapter.runtime.utils.IOutputDataBuffer;
 
 public class PluginLifeCycleTest {
 
@@ -59,9 +61,12 @@ public class PluginLifeCycleTest {
 			System.out.println("connection established");
 		}
 
+		// Gets all metadata record.
 		IMetadata metadata = plugin.getMetadata(connection);
 		List<RecordInfo> metadataRecords = metadata.getAllRecords();
 
+		// Prints out the schema of all metadata records
+		// and shows data preview for each table.
 		for (RecordInfo record : metadataRecords) {
 			List<Field> fields = metadata.getFields(record, true);
 			System.out.println(record.getInstanceName());
@@ -69,8 +74,7 @@ public class PluginLifeCycleTest {
 				System.out.print(field.getDisplayName() + ":"
 						+ field.getDatatype().getName() + "|");
 			}
-			System.out.println("preview ");
-
+			System.out.println("Data preview: ");
 			String[][] preview = metadata.getDataPreview(record, 200,
 					toFieldInfoList(fields));
 			for (int row = 0; row < preview.length; ++row) {
@@ -80,6 +84,19 @@ public class PluginLifeCycleTest {
 				System.out.println();
 			}
 			System.out.println();
+		}
+
+		// Read each existing table.
+		for (RecordInfo record : metadataRecords) {
+			List<Field> fields = metadata.getFields(record, true);
+			IOutputDataBuffer outputBuffer = new MockedOutputDataBuffer();
+			IRead reader = plugin.getReader(connection);
+			reader.setPrimaryRecord(record);
+			reader.setFieldList(fields);
+			if (!reader.read(outputBuffer)) {
+				throw new IllegalStateException(
+						"The reader does not read correctly.");
+			}
 		}
 
 		// Closes the connection
