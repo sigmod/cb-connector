@@ -28,6 +28,7 @@ import com.informatica.cloud.api.adapter.common.ILogger;
 import com.informatica.cloud.api.adapter.metadata.CreateRecordResult;
 import com.informatica.cloud.api.adapter.metadata.DataPreviewException;
 import com.informatica.cloud.api.adapter.metadata.Field;
+import com.informatica.cloud.api.adapter.metadata.FieldAttribute;
 import com.informatica.cloud.api.adapter.metadata.FieldInfo;
 import com.informatica.cloud.api.adapter.metadata.FilterInfo;
 import com.informatica.cloud.api.adapter.metadata.FilterSerializationException;
@@ -260,6 +261,11 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 				Field field = new Field();
 				field.setDisplayName(columnName);
 				field.setLabel(columnName);
+				field.setUniqueName(columnName);
+				field.setDescription(columnName);
+				field.setCustomAttributes(new ArrayList<FieldAttribute>());
+				field.setContainingRecord(recordInfo);
+				field.setDefaultValue("");
 				field.setFilterable(false);
 				AttributeTypeCode typeCode = AttributeTypeCode
 						.valueOf(typeName);
