@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import com.couchbase.connector.connection.CBConnection;
 import com.couchbase.connector.plugin.CBPlugin;
 import com.couchbase.connector.utils.AttributeTypeCode;
+import com.couchbase.connector.utils.CBUtils;
 import com.informatica.cloud.api.adapter.common.ELogMsgLevel;
 import com.informatica.cloud.api.adapter.common.ILogger;
 import com.informatica.cloud.api.adapter.metadata.CreateRecordResult;
@@ -162,30 +163,34 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		if (lstFieldInfo.size() == 0) {
 			return new String[0][0];
 		}
-
-		/**
-		 * Builds the query string.
-		 */
-		StringBuilder queryBuilder = new StringBuilder();
-		queryBuilder.append("select top 20 * ");
-
-		// TODO(yingyi): Simba JDBC driver has sporadic failures for projection
-		// queries, change back when Simba fixes this.
-		// for (FieldInfo field : lstFieldInfo) {
-		// queryBuilder.append("`" + field.getDisplayName() + "`, ");
-		// }
-		// queryBuilder.delete(queryBuilder.length() - 2,
-		// queryBuilder.length());
-		queryBuilder.append(" from `");
-		queryBuilder.append(tableName);
-		queryBuilder.append("`");
-
-		/**
-		 * Runs the preview query and put results into the
-		 * sArrDataPreviewRowData array.
-		 */
 		try {
 			Connection jdbcConnection = getJDBCConnection();
+			if (!verifyRecordInfoExistence(recordInfo, jdbcConnection)) {
+				return new String[0][0];
+			}
+
+			/**
+			 * Builds the query string.
+			 */
+			StringBuilder queryBuilder = new StringBuilder();
+			queryBuilder.append("select top 20 * ");
+
+			// TODO(yingyi): Simba JDBC driver has sporadic failures for
+			// projection
+			// queries, change back when Simba fixes this.
+			// for (FieldInfo field : lstFieldInfo) {
+			// queryBuilder.append("`" + field.getDisplayName() + "`, ");
+			// }
+			// queryBuilder.delete(queryBuilder.length() - 2,
+			// queryBuilder.length());
+			queryBuilder.append(" from `");
+			queryBuilder.append(tableName);
+			queryBuilder.append("`");
+
+			/**
+			 * Runs the preview query and put results into the
+			 * sArrDataPreviewRowData array.
+			 */
 			Statement stmt = jdbcConnection.createStatement();
 			ResultSet rs = stmt.executeQuery(queryBuilder.toString());
 			while (rs.next()) {
@@ -208,6 +213,29 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		return previewRows.toArray(new String[0][]);
 	}
 
+	/**
+	 * Verify if the table represented by the record info exists in the
+	 * metadata.
+	 * 
+	 * @param recordInfo
+	 *            the table representation in the informatica framework.
+	 * @param jdbcConnection
+	 *            the JDBC connection.
+	 * @return true the table exits; otherwise, false.
+	 * @throws SQLException
+	 */
+	private boolean verifyRecordInfoExistence(RecordInfo recordInfo,
+			Connection jdbcConnection) throws SQLException {
+		DatabaseMetaData metadata = jdbcConnection.getMetaData();
+		ResultSet tableRs = metadata.getTables(null,
+				recordInfo.getCatalogName(), recordInfo.getInstanceName(),
+				new String[] { "TABLE" });
+		if (!tableRs.next()) {
+			return false;
+		}
+		return true;
+	}
+
 	@Override
 	public List<Field> getFields(RecordInfo recordInfo, boolean refreshFields)
 			throws MetadataReadException {
@@ -216,9 +244,13 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		// we ignore the refreshFields parameter.
 		List<Field> lstFields = new ArrayList<Field>();
 		try {
+			Connection jdbcConnection = getJDBCConnection();
+			if (!verifyRecordInfoExistence(recordInfo, jdbcConnection)) {
+				return lstFields;
+			}
+
 			String nameSpaceName = recordInfo.getCatalogName();
 			String tableName = recordInfo.getInstanceName();
-			Connection jdbcConnection = getJDBCConnection();
 			DatabaseMetaData metadata = jdbcConnection.getMetaData();
 			ResultSet schema = metadata.getColumns(null, nameSpaceName,
 					tableName, null);
@@ -237,6 +269,7 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 				List<JavaDataType> candidateJavaTypes = typeSystem
 						.getDatatypeMapping().get(nativeType);
 				field.setJavaDatatype(candidateJavaTypes.get(0));
+				field.setPrecision(CBUtils.getPrecisionForDatatype(typeName));
 				lstFields.add(field);
 			}
 		} catch (Exception e) {
