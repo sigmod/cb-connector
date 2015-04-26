@@ -82,6 +82,7 @@ public class CBTypeSystem implements ITypeSystem {
 
 		case SMALLINT:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_INTEGER);
+			listOfJavaDataTypes.add(JavaDataType.JAVA_SHORT);
 			break;
 
 		case TINYINT:
@@ -98,10 +99,15 @@ public class CBTypeSystem implements ITypeSystem {
 			listOfJavaDataTypes.add(JavaDataType.JAVA_FLOAT);
 			break;
 
-		case STRING:
 		case OBJECT:
+			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
+			break;
+			
+		case STRING:
 		case NULL:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
+			listOfJavaDataTypes.add(JavaDataType.JAVA_TIMESTAMP);
+			listOfJavaDataTypes.add(JavaDataType.JAVA_BYTES);
 			break;
 
 		case CHAR:
@@ -110,6 +116,8 @@ public class CBTypeSystem implements ITypeSystem {
 
 		case VARCHAR:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
+			listOfJavaDataTypes.add(JavaDataType.JAVA_TIMESTAMP);
+			listOfJavaDataTypes.add(JavaDataType.JAVA_BYTES);
 			break;
 
 		case DOUBLE:
