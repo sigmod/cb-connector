@@ -91,7 +91,7 @@ public class CBRead implements IRead {
 			ReadException, DataConversionException, FatalRuntimeException {
 		boolean bStatus = false;
 		if (fieldList.size() == 0) {
-			return bStatus;
+			return true;
 		}
 		if (outputDataBuffer != null) {
 			/**
@@ -101,7 +101,8 @@ public class CBRead implements IRead {
 				Connection jdbcConnection = getJDBCConnection();
 				if (!verifyRecordInfoExistence(primaryRecordInfo,
 						jdbcConnection)) {
-					return bStatus;
+					throw new ReadException("Table not found "
+							+ primaryRecordInfo.getRecordName());
 				}
 
 				/**

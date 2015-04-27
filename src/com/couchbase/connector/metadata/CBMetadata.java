@@ -219,7 +219,8 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		try {
 			Connection jdbcConnection = getJDBCConnection();
 			if (!verifyRecordInfoExistence(recordInfo, jdbcConnection)) {
-				return lstFields;
+				throw new MetadataReadException("Table not found "
+						+ recordInfo.getRecordName());
 			}
 
 			String nameSpaceName = recordInfo.getCatalogName();
@@ -250,6 +251,11 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 				field.setPrecision(CBUtils.getPrecisionForDatatype(typeName));
 				field.setScale(CBUtils.getPrecisionForDatatype(typeName));
 				lstFields.add(field);
+			}
+			if (lstFields.isEmpty()) {
+				throw new IllegalStateException(
+						"list of fields is empty for table "
+								+ recordInfo.getRecordName());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
