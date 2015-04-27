@@ -128,21 +128,16 @@ public class CBRead implements IRead {
 				 * Runs the select * query and put results into the
 				 * sArrDataPreviewRowData array.
 				 */
+				int fieldNumber = fieldList.size();
 				Statement stmt = jdbcConnection.createStatement();
 				ResultSet rs = stmt.executeQuery(queryBuilder.toString());
 				while (rs.next()) {
-					int fieldNumber = rs.getMetaData().getColumnCount();
 					Object[] row = new Object[fieldNumber];
 					Object fieldValue = null;
 					for (int columnIndex = 1; columnIndex <= fieldNumber; columnIndex++) {
 						try {
-							JavaDataType fieldType = JavaDataType.JAVA_STRING;
-							if (columnIndex < fieldTypes.size()) {
-								fieldType = fieldTypes.get(columnIndex);
-							}
-							if (fieldType == null) {
-								fieldType = JavaDataType.JAVA_STRING;
-							}
+							JavaDataType fieldType = fieldList.get(
+									columnIndex - 1).getJavaDatatype();
 							switch (fieldType) {
 							case JAVA_DOUBLE:
 							case JAVA_FLOAT:
