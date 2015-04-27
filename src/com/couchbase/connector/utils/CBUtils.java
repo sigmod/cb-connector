@@ -31,7 +31,7 @@ public class CBUtils {
 			precision = 255;
 			break;
 		case VARCHAR:
-			precision = Integer.MAX_VALUE;
+			precision = 8192;
 			break;
 		case DECIMAL:
 			precision = 28;
