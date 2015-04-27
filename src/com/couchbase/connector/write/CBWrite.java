@@ -9,7 +9,6 @@
 
 package com.couchbase.connector.write;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import com.couchbase.connector.connection.CBConnection;
 import com.couchbase.connector.plugin.CBPlugin;
 import com.couchbase.connector.utils.CBPopulateSuccessAndErrorBuffer;
 import com.couchbase.connector.utils.CBSuccessAndErrorBuffer;
-import com.informatica.cloud.api.adapter.common.ELogMsgLevel;
 import com.informatica.cloud.api.adapter.common.ILogger;
 import com.informatica.cloud.api.adapter.connection.ConnectionFailedException;
 import com.informatica.cloud.api.adapter.metadata.Field;
@@ -98,10 +96,6 @@ public class CBWrite implements IWrite2 {
 			throws ConnectionFailedException, ReflectiveOperationException,
 			WriteException, DataConversionException, FatalRuntimeException {
 		if (iInputDataBuffer != null) {
-			logger.logMessage("CSVFileWrite", "delete ", ELogMsgLevel.ERROR,
-					"'Delete' Operation is not supported....!");
-			throw new FatalRuntimeException(
-					"'Delete' Operation is not supported....!");
 		}
 	}
 
@@ -110,39 +104,7 @@ public class CBWrite implements IWrite2 {
 			throws ConnectionFailedException, ReflectiveOperationException,
 			WriteException, DataConversionException, FatalRuntimeException {
 		if (iInputDataBuffer != null) {
-			setOperation(Operation.INSERT);
-			try {
-
-				Map<String, String> mapNextLine = new HashMap<String, String>();
-
-				while (iInputDataBuffer.hasMoreRows()) {
-					Object[] rowData = iInputDataBuffer.getData();
-					for (int iCount = 0; iCount < inputFieldList.size(); iCount++) {
-						String sValue = (rowData[iCount] == null ? null
-								: rowData[iCount].toString());
-						mapNextLine.put(inputFieldList.get(iCount)
-								.getUniqueName(), sValue);
-					}
-					populateBuffer.populateOutputBuffer(rowData,
-							successAndErrorBuffer);
-					incrementSuccessRowsForOp(1);
-					incrementProcessedRowsForOp(1);
-				}
-			} catch (IOException e1) {
-				e1.printStackTrace();
-				logger.logMessage("CSVFileWrite", "insert", ELogMsgLevel.INFO,
-						"Error occured while writing data: " + e1.getMessage());
-				throw new FatalRuntimeException(
-						"Error occured while writing data: " + e1.getMessage());
-			} catch (Exception e) {
-				e.printStackTrace();
-				logger.logMessage("CSVFileWrite", "insert", ELogMsgLevel.INFO,
-						"Error occured while writing data: " + e.getMessage());
-				throw new FatalRuntimeException(
-						"Error occured while writing data: " + e.getMessage());
-			}
 		}
-
 	}
 
 	@Override
@@ -150,10 +112,6 @@ public class CBWrite implements IWrite2 {
 			throws ConnectionFailedException, ReflectiveOperationException,
 			WriteException, DataConversionException, FatalRuntimeException {
 		if (iInputDataBuffer != null) {
-			logger.logMessage("CSVFileWrite", "update ", ELogMsgLevel.ERROR,
-					"'Delete' Operation is not supported....!");
-			throw new FatalRuntimeException(
-					"'Update' Operation is not supported....!");
 		}
 	}
 
@@ -162,10 +120,6 @@ public class CBWrite implements IWrite2 {
 			throws ConnectionFailedException, ReflectiveOperationException,
 			WriteException, DataConversionException, FatalRuntimeException {
 		if (iInputDataBuffer != null) {
-			logger.logMessage("CSVFileWrite", "upsert ", ELogMsgLevel.ERROR,
-					"'Delete' Operation is not supported....!");
-			throw new FatalRuntimeException(
-					"'Upsert' Operation is not supported....!");
 		}
 	}
 
