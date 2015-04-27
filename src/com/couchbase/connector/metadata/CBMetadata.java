@@ -250,10 +250,6 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 				field.setPrecision(CBUtils.getPrecisionForDatatype(typeName));
 				field.setScale(CBUtils.getPrecisionForDatatype(typeName));
 				lstFields.add(field);
-				System.out.println(field.getDisplayName() + " "
-						+ field.getContainingRecord() + " "
-						+ field.getDatatype().getName() + " "
-						+ field.getJavaDatatype().getFullClassName());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
