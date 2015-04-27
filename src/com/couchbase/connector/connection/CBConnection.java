@@ -35,6 +35,15 @@ public class CBConnection implements IConnection {
 	@Override
 	public boolean connect() throws InsufficientConnectInfoException,
 			ConnectionFailedException {
+		try {
+			// Reuses an established connection if it is available.
+			if (validate()) {
+				return true;
+			}
+		} catch (Exception e) {
+			throw new ConnectionFailedException(e);
+		}
+
 		if (connAttribs != null && !connAttribs.isEmpty()
 				&& connAttribs.size() > 0) {
 			String connectionURL = connAttribs
@@ -56,10 +65,15 @@ public class CBConnection implements IConnection {
 				// Load the JDBC Driver class.
 				Class.forName(jdbcDriver);
 
+				if (connection != null) {
+					connection.close();
+				}
+
 				// Establish a connection using the connection // URL
 				connection = DriverManager.getConnection(connectionURL,
 						userName, password);
 			} catch (Exception e) {
+				e.printStackTrace();
 				throw new ConnectionFailedException(e);
 			}
 
@@ -104,7 +118,23 @@ public class CBConnection implements IConnection {
 	}
 
 	public Connection getConnection() {
+		try {
+			if (!validate()) {
+				if (!connect()) {
+					throw new ConnectionFailedException("connection failed");
+				}
+			}
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
 		return connection;
+	}
+
+	@Override
+	public IConnection clone() {
+		IConnection newConnection = new CBConnection();
+		newConnection.setConnectionAttributes(connAttribs);
+		return newConnection;
 	}
 
 }

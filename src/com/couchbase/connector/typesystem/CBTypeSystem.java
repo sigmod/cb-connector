@@ -51,7 +51,7 @@ public class CBTypeSystem implements ITypeSystem {
 		if (nativeDataTypes == null) {
 			nativeDataTypes = new ArrayList<DataType>();
 			for (AttributeTypeCode type : AttributeTypeCode.values()) {
-				int id = type.ordinal();
+				int id = type.id();
 				String name = type.name();
 				DataType dt = new DataType(name, id);
 				dt.setDefaultPrecision(CBUtils.getPrecisionForDatatype(name));
@@ -61,6 +61,7 @@ public class CBTypeSystem implements ITypeSystem {
 		return nativeDataTypes;
 	}
 
+	@SuppressWarnings("deprecation")
 	public List<JavaDataType> getJavaDataTypesFor(String dataTypeName)
 			throws Exception {
 		ArrayList<JavaDataType> listOfJavaDataTypes = new ArrayList<JavaDataType>();
@@ -102,7 +103,7 @@ public class CBTypeSystem implements ITypeSystem {
 		case OBJECT:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);
 			break;
-			
+
 		case STRING:
 		case NULL:
 			listOfJavaDataTypes.add(JavaDataType.JAVA_STRING);

@@ -10,6 +10,7 @@
 package com.couchbase.connector.read;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -25,7 +26,6 @@ import com.informatica.cloud.api.adapter.connection.ConnectionFailedException;
 import com.informatica.cloud.api.adapter.metadata.AdvancedFilterInfo;
 import com.informatica.cloud.api.adapter.metadata.Field;
 import com.informatica.cloud.api.adapter.metadata.FilterInfo;
-import com.informatica.cloud.api.adapter.metadata.MetadataReadException;
 import com.informatica.cloud.api.adapter.metadata.RecordInfo;
 import com.informatica.cloud.api.adapter.plugin.PluginVersion;
 import com.informatica.cloud.api.adapter.runtime.IRead;
@@ -97,33 +97,36 @@ public class CBRead implements IRead {
 			/**
 			 * Gets the name of the table to be reviewed.
 			 */
-			String tableName = primaryRecordInfo.getInstanceName();
-
-			/**
-			 * Builds the query string.
-			 */
-			StringBuilder queryBuilder = new StringBuilder();
-			queryBuilder.append("select * ");
-
-			// TODO(yingyi): Simba JDBC driver has sporadic failures for
-			// projection
-			// queries, change back when Simba fixes this.
-			// for (Field field : fieldList) {
-			// queryBuilder.append("`" + field.getDisplayName() + "`, ");
-			// }
-			// queryBuilder.delete(queryBuilder.length() - 2,
-			// queryBuilder.length());
-			queryBuilder.append(" from `");
-			queryBuilder.append(tableName);
-			queryBuilder.append("`");
-
-			System.out.println(queryBuilder.toString());
-			/**
-			 * Runs the select * query and put results into the
-			 * sArrDataPreviewRowData array.
-			 */
 			try {
 				Connection jdbcConnection = getJDBCConnection();
+				if (!verifyRecordInfoExistence(primaryRecordInfo,
+						jdbcConnection)) {
+					return bStatus;
+				}
+
+				/**
+				 * Builds the query string.
+				 */
+				String tableName = primaryRecordInfo.getRecordName();
+				StringBuilder queryBuilder = new StringBuilder();
+				queryBuilder.append("select * ");
+
+				// TODO(yingyi): Simba JDBC driver has sporadic failures for
+				// projection
+				// queries, change back when Simba fixes this.
+				// for (Field field : fieldList) {
+				// queryBuilder.append("`" + field.getDisplayName() + "`, ");
+				// }
+				// queryBuilder.delete(queryBuilder.length() - 2,
+				// queryBuilder.length());
+				queryBuilder.append(" from `");
+				queryBuilder.append(tableName);
+				queryBuilder.append("`");
+
+				/**
+				 * Runs the select * query and put results into the
+				 * sArrDataPreviewRowData array.
+				 */
 				Statement stmt = jdbcConnection.createStatement();
 				ResultSet rs = stmt.executeQuery(queryBuilder.toString());
 				while (rs.next()) {
@@ -166,7 +169,7 @@ public class CBRead implements IRead {
 					outputDataBuffer.setData(row);
 				}
 				bStatus = true;
-			} catch (Exception e) {
+			} catch (SQLException e) {
 				e.printStackTrace();
 				logger.logMessage("JDBC connection error", "",
 						ELogMsgLevel.ERROR, e.getLocalizedMessage());
@@ -207,19 +210,32 @@ public class CBRead implements IRead {
 
 	/**
 	 * Gets the JDBC connection from the IConnection instance.
-	 * 
-	 * @return the SQL JDBC connection.
-	 * @throws SQLException
-	 * @throws MetadataReadException
 	 */
-	private Connection getJDBCConnection() throws SQLException,
-			MetadataReadException {
-		Connection jdbcConnection = connection.getConnection();
-		if (jdbcConnection == null || jdbcConnection.isClosed()) {
-			throw new MetadataReadException(
-					"The JDBC connection is unavailable.");
+	private Connection getJDBCConnection() {
+		return connection.getConnection();
+	}
+
+	/**
+	 * Verify if the table represented by the record info exists in the
+	 * metadata.
+	 * 
+	 * @param recordInfo
+	 *            the table representation in the informatica framework.
+	 * @param jdbcConnection
+	 *            the JDBC connection.
+	 * @return true the table exits; otherwise, false.
+	 * @throws SQLException
+	 */
+	private boolean verifyRecordInfoExistence(RecordInfo recordInfo,
+			Connection jdbcConnection) throws SQLException {
+		DatabaseMetaData metadata = jdbcConnection.getMetaData();
+		ResultSet tableRs = metadata.getTables(null,
+				recordInfo.getCatalogName(), recordInfo.getRecordName(),
+				new String[] { "TABLE" });
+		if (!tableRs.next()) {
+			return false;
 		}
-		return jdbcConnection;
+		return true;
 	}
 
 }

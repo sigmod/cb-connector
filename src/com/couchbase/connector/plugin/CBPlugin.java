@@ -34,12 +34,8 @@ import com.informatica.cloud.api.adapter.runtime.exception.InitializationExcepti
 @SuppressWarnings("deprecation")
 public class CBPlugin implements IPlugin, IExtWrtPlugin {
 
-	private IRegistrationInfo cbRegInfo;
-	private IConnection cbConnection;
-	private IMetadata cbMetadata;
 	private ILogger logger;
-	private IRead cbReader;
-	private IWrite2 cbWriter;
+	private CBConnection connection;
 
 	@Override
 	public List<Capability> getCapabilities() {
@@ -52,29 +48,28 @@ public class CBPlugin implements IPlugin, IExtWrtPlugin {
 
 	@Override
 	public IConnection getConnection() {
-		if (cbConnection == null) {
-			cbConnection = new CBConnection();
+		if (connection == null) {
+			connection = new CBConnection();
+			return connection;
+		} else {
+			return connection.clone();
 		}
-		return cbConnection;
 	}
 
 	@Override
 	public IMetadata getMetadata(IConnection conn)
 			throws InitializationException {
-		cbMetadata = new CBMetadata(this, (CBConnection) conn);
-		return cbMetadata;
+		return new CBMetadata(this, (CBConnection) conn);
 	}
 
 	@Override
 	public IRead getReader(IConnection conn) throws InitializationException {
-		cbReader = new CBRead(this, (CBConnection) conn);
-		return cbReader;
+		return new CBRead(this, (CBConnection) conn);
 	}
 
 	@Override
 	public IRegistrationInfo getRegistrationInfo() {
-		cbRegInfo = new CBRegistrationInfo();
-		return cbRegInfo;
+		return new CBRegistrationInfo();
 	}
 
 	@Override
@@ -103,7 +98,6 @@ public class CBPlugin implements IPlugin, IExtWrtPlugin {
 
 	@Override
 	public IWrite2 getExtendedWriter(IConnection conn) {
-		cbWriter = new CBWrite(this, (CBConnection) conn);
-		return cbWriter;
+		return new CBWrite(this, (CBConnection) conn);
 	}
 }

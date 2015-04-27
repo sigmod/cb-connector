@@ -10,6 +10,17 @@
 package com.couchbase.connector.utils;
 
 public enum AttributeTypeCode {
-	ARRAY, BIGINT, BOOLEAN, STRING, CHAR, DECIMAL, DOUBLE, INT, INTEGER, OBJECT, SMALLINT, TINYINT, VARCHAR, NULL;
+	ARRAY(1), BIGINT(2), BOOLEAN(3), STRING(4), CHAR(5), DECIMAL(6), DOUBLE(7), INT(
+			8), INTEGER(9), OBJECT(10), SMALLINT(11), TINYINT(12), VARCHAR(13), NULL(
+			14);
 
+	private int id = 0;
+
+	private AttributeTypeCode(int id) {
+		this.id = id;
+	}
+
+	public int id() {
+		return id;
+	}
 }

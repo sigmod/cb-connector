@@ -28,7 +28,6 @@ import com.informatica.cloud.api.adapter.common.ILogger;
 import com.informatica.cloud.api.adapter.metadata.CreateRecordResult;
 import com.informatica.cloud.api.adapter.metadata.DataPreviewException;
 import com.informatica.cloud.api.adapter.metadata.Field;
-import com.informatica.cloud.api.adapter.metadata.FieldAttribute;
 import com.informatica.cloud.api.adapter.metadata.FieldInfo;
 import com.informatica.cloud.api.adapter.metadata.FilterInfo;
 import com.informatica.cloud.api.adapter.metadata.FilterSerializationException;
@@ -61,10 +60,11 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 			List<Field> fieldList) throws MetadataCreateException {
 		CreateRecordResult createRecordResult = new CreateRecordResult();
 		List<Field> targetFields = new ArrayList<Field>();
-		recordInfo.setLabel(recordInfo.getRecordName());
-		recordInfo.setCatalogName("default");
+		RecordInfo targetRecordInfo = new RecordInfo();
+		targetRecordInfo.setRecordName(recordInfo.getRecordName());
+		targetRecordInfo.setInstanceName(recordInfo.getRecordName());
+		targetRecordInfo.setCatalogName(recordInfo.getCatalogName());
 		try {
-			createRecordResult.setFields(fieldList);
 			targetFields = getFields(recordInfo, false);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -79,7 +79,7 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 							+ e.getMessage());
 		}
 		createRecordResult = new CreateRecordResult();
-		createRecordResult.setRecordInfo(recordInfo);
+		createRecordResult.setRecordInfo(targetRecordInfo);
 		createRecordResult.setFields(targetFields);
 		return createRecordResult;
 	}
@@ -130,22 +130,13 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 				RecordInfo recordInfo = new RecordInfo();
 				recordInfo.setCatalogName(nameSpaceName);
 				recordInfo.setInstanceName(tableName);
+				recordInfo.setRecordName(tableName);
 				lstRecordInfo.add(recordInfo);
 			}
 			return lstRecordInfo;
 		} catch (Exception e) {
 			throw new MetadataReadException(e);
 		}
-	}
-
-	private Connection getJDBCConnection() throws SQLException,
-			MetadataReadException {
-		Connection jdbcConnection = connection.getConnection();
-		if (jdbcConnection == null || jdbcConnection.isClosed()) {
-			throw new MetadataReadException(
-					"The JDBC connection is unavailable.");
-		}
-		return jdbcConnection;
 	}
 
 	@Override
@@ -156,7 +147,11 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		/**
 		 * Gets the name of the table to be reviewed.
 		 */
-		String tableName = recordInfo.getInstanceName();
+		String tableName = recordInfo.getRecordName();
+
+		if (tableName == null) {
+			throw new DataPreviewException("table name could not be null!");
+		}
 
 		/**
 		 * If no fields to display, return immediately.
@@ -214,29 +209,6 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		return previewRows.toArray(new String[0][]);
 	}
 
-	/**
-	 * Verify if the table represented by the record info exists in the
-	 * metadata.
-	 * 
-	 * @param recordInfo
-	 *            the table representation in the informatica framework.
-	 * @param jdbcConnection
-	 *            the JDBC connection.
-	 * @return true the table exits; otherwise, false.
-	 * @throws SQLException
-	 */
-	private boolean verifyRecordInfoExistence(RecordInfo recordInfo,
-			Connection jdbcConnection) throws SQLException {
-		DatabaseMetaData metadata = jdbcConnection.getMetaData();
-		ResultSet tableRs = metadata.getTables(null,
-				recordInfo.getCatalogName(), recordInfo.getInstanceName(),
-				new String[] { "TABLE" });
-		if (!tableRs.next()) {
-			return false;
-		}
-		return true;
-	}
-
 	@Override
 	public List<Field> getFields(RecordInfo recordInfo, boolean refreshFields)
 			throws MetadataReadException {
@@ -263,22 +235,28 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 				field.setLabel(columnName);
 				field.setUniqueName(columnName);
 				field.setDescription(columnName);
-				field.setCustomAttributes(new ArrayList<FieldAttribute>());
 				field.setContainingRecord(recordInfo);
-				field.setDefaultValue("");
 				field.setFilterable(false);
+				field.setKey(false);
+				field.setReadOnly(true);
 				AttributeTypeCode typeCode = AttributeTypeCode
 						.valueOf(typeName);
 				DataType nativeType = new DataType(typeCode.name(),
-						typeCode.ordinal());
+						typeCode.id());
 				field.setDatatype(nativeType);
 				List<JavaDataType> candidateJavaTypes = typeSystem
 						.getDatatypeMapping().get(nativeType);
 				field.setJavaDatatype(candidateJavaTypes.get(0));
 				field.setPrecision(CBUtils.getPrecisionForDatatype(typeName));
+				field.setScale(CBUtils.getPrecisionForDatatype(typeName));
 				lstFields.add(field);
+				System.out.println(field.getDisplayName() + " "
+						+ field.getContainingRecord() + " "
+						+ field.getDatatype().getName() + " "
+						+ field.getJavaDatatype().getFullClassName());
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new MetadataReadException(e);
 		}
 		return lstFields;
@@ -331,7 +309,7 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		f.setDisplayName("ErrorMessage");
 		f.setLabel("ErrorMessage");
 		f.setDatatype(new DataType(AttributeTypeCode.STRING.name(),
-				AttributeTypeCode.STRING.ordinal()));
+				AttributeTypeCode.STRING.id()));
 		f.setJavaDatatype(JavaDataType.JAVA_STRING);
 		f.setPrecision(200);
 		field.add(f);
@@ -342,6 +320,33 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 	public List<Field> getOutputFields(RecordInfo arg0, List<Relationship> arg1)
 			throws MetadataReadException {
 		return new ArrayList<Field>();
+	}
+
+	/**
+	 * Verify if the table represented by the record info exists in the
+	 * metadata.
+	 * 
+	 * @param recordInfo
+	 *            the table representation in the informatica framework.
+	 * @param jdbcConnection
+	 *            the JDBC connection.
+	 * @return true the table exits; otherwise, false.
+	 * @throws SQLException
+	 */
+	private boolean verifyRecordInfoExistence(RecordInfo recordInfo,
+			Connection jdbcConnection) throws SQLException {
+		DatabaseMetaData metadata = jdbcConnection.getMetaData();
+		ResultSet tableRs = metadata.getTables(null,
+				recordInfo.getCatalogName(), recordInfo.getRecordName(),
+				new String[] { "TABLE" });
+		if (!tableRs.next()) {
+			return false;
+		}
+		return true;
+	}
+
+	private Connection getJDBCConnection() {
+		return connection.getConnection();
 	}
 
 }
