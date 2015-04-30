@@ -79,7 +79,7 @@ public class PluginLifeCycleTest {
 					toFieldInfoList(fields));
 			for (int row = 0; row < preview.length; ++row) {
 				for (String fieldValue : preview[row]) {
-					System.out.print(fieldValue.toString() + "|");
+					System.out.print(fieldValue + "|");
 				}
 				System.out.println();
 			}
