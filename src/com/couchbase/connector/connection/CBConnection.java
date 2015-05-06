@@ -22,119 +22,112 @@ import com.informatica.cloud.api.adapter.plugin.InvalidArgumentException;
 
 public class CBConnection implements IConnection {
 
-	// Define a string as the fully qualified class name
-	private static String jdbcDriver = "com.simba.couchbase.jdbc41.Driver";
+    // Define a string as the fully qualified class name
+    private static String jdbcDriver = "com.simba.couchbase.jdbc4.Driver";
 
-	// Connection attributes, the key-values are passed from the Informatica
-	// framework
-	private Map<String, String> connAttribs = new HashMap<String, String>();
+    // Connection attributes, the key-values are passed from the Informatica
+    // framework
+    private Map<String, String> connAttribs = new HashMap<String, String>();
 
-	// The JDBC connection object
-	private Connection connection = null;
+    // The JDBC connection object
+    private Connection connection = null;
 
-	@Override
-	public boolean connect() throws InsufficientConnectInfoException,
-			ConnectionFailedException {
-		try {
-			// Reuses an established connection if it is available.
-			if (validate()) {
-				return true;
-			}
-		} catch (Exception e) {
-			throw new ConnectionFailedException(e);
-		}
+    @Override
+    public boolean connect() throws InsufficientConnectInfoException, ConnectionFailedException {
+        try {
+            // Reuses an established connection if it is available.
+            if (validate()) {
+                return true;
+            }
+        } catch (Exception e) {
+            throw new ConnectionFailedException(e);
+        }
 
-		if (connAttribs != null && !connAttribs.isEmpty()
-				&& connAttribs.size() > 0) {
-			String connectionURL = connAttribs
-					.get(StandardAttributes.connectionUrl.getName());
-			String userName = connAttribs.get(StandardAttributes.username
-					.getName());
-			String password = connAttribs.get(StandardAttributes.password
-					.getName());
+        if (connAttribs != null && !connAttribs.isEmpty() && connAttribs.size() > 0) {
+            String connectionURL = connAttribs.get(StandardAttributes.connectionUrl.getName());
+            String userName = connAttribs.get(StandardAttributes.username.getName());
+            String password = connAttribs.get(StandardAttributes.password.getName());
 
-			// Check connection parameters
-			if (connectionURL == null || userName == null || password == null) {
-				throw new InsufficientConnectInfoException(
-						"Missing connection parameters:" + connectionURL == null ? " (connection URL)"
-								: "" + userName == null ? " (user name)" : ""
-										+ password == null ? " (password)" : ""
-										+ ".");
-			}
-			try {
-				// Load the JDBC Driver class.
-				Class.forName(jdbcDriver);
+            // Check connection parameters
+            if (connectionURL == null || userName == null || password == null) {
+                throw new InsufficientConnectInfoException(
+                        "Missing connection parameters:" + connectionURL == null ? " (connection URL)"
+                                : "" + userName == null ? " (user name)" : "" + password == null ? " (password)" : ""
+                                        + ".");
+            }
+            try {
+                // Load the JDBC Driver class.
+                Class.forName(jdbcDriver);
 
-				if (connection != null) {
-					connection.close();
-				}
+                if (connection != null) {
+                    connection.close();
+                }
 
-				// Establish a connection using the connection // URL
-				connection = DriverManager.getConnection(connectionURL,
-						userName, password);
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new ConnectionFailedException(e);
-			}
+                // Establish a connection using the connection // URL
+                connection = DriverManager.getConnection(connectionURL, userName, password);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new ConnectionFailedException(e);
+            }
 
-			// Reaching here without exceptions means the connection is
-			// established.
-			return true;
-		} else {
-			// The connection attribute map is missing or empty.
-			return false;
-		}
-	}
+            // Reaching here without exceptions means the connection is
+            // established.
+            return true;
+        } else {
+            // The connection attribute map is missing or empty.
+            return false;
+        }
+    }
 
-	@Override
-	public boolean disconnect() {
-		if (connection == null) {
-			return false;
-		}
-		try {
-			connection.close();
-			return true;
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-	}
+    @Override
+    public boolean disconnect() {
+        if (connection == null) {
+            return false;
+        }
+        try {
+            connection.close();
+            return true;
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
-	@Override
-	public void setConnectionAttributes(Map<String, String> connParams) {
-		this.connAttribs.clear();
-		this.connAttribs.putAll(connParams);
-	}
+    @Override
+    public void setConnectionAttributes(Map<String, String> connParams) {
+        this.connAttribs.clear();
+        this.connAttribs.putAll(connParams);
+    }
 
-	@Override
-	public boolean validate() throws InvalidArgumentException {
-		if (connection == null) {
-			return false;
-		}
-		try {
-			return !connection.isClosed();
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-	}
+    @Override
+    public boolean validate() throws InvalidArgumentException {
+        if (connection == null) {
+            return false;
+        }
+        try {
+            return !connection.isClosed();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
-	public Connection getConnection() {
-		try {
-			if (!validate()) {
-				if (!connect()) {
-					throw new ConnectionFailedException("connection failed");
-				}
-			}
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-		return connection;
-	}
+    public Connection getConnection() {
+        try {
+            if (!validate()) {
+                if (!connect()) {
+                    throw new ConnectionFailedException("connection failed");
+                }
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        return connection;
+    }
 
-	@Override
-	public IConnection clone() {
-		IConnection newConnection = new CBConnection();
-		newConnection.setConnectionAttributes(connAttribs);
-		return newConnection;
-	}
+    @Override
+    public IConnection clone() {
+        IConnection newConnection = new CBConnection();
+        newConnection.setConnectionAttributes(connAttribs);
+        return newConnection;
+    }
 
 }
