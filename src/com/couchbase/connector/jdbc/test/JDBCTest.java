@@ -61,7 +61,7 @@ public class JDBCTest {
 			System.out.println();
 		}
 
-		String query = "select top 1 * from orders";
+		String query = "select top 1 * from `beer-sample`";
 		Statement stmt = connection.createStatement();
 		rs = stmt.executeQuery(query);
 		rsmd = rs.getMetaData();

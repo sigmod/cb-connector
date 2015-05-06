@@ -12,7 +12,7 @@ package com.couchbase.connector.constant;
 public class CBConstants {
 
 	public static final String PLUGIN_SHORT_NAME = "Couchbase";
-	public static final String PLUGIN_DESC = "This is the Couchbase connector that connects to a Couchbase server.";
+	public static final String PLUGIN_DESC = "This is the Couchbase connector that connects to a Couchbase server";
 	public static final String PLUGIN_NAME = "Couchbase";
 	public static final String REQUIRED_LEVEL = "Required Level";
 
