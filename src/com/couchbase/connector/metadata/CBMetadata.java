@@ -153,12 +153,6 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 			throw new DataPreviewException("table name could not be null!");
 		}
 
-		/**
-		 * If no fields to display, return immediately.
-		 */
-		if (lstFieldInfo.size() == 0) {
-			return new String[0][0];
-		}
 		try {
 			Connection jdbcConnection = getJDBCConnection();
 			if (!verifyRecordInfoExistence(recordInfo, jdbcConnection)) {
