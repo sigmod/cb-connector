@@ -23,7 +23,6 @@ import com.couchbase.connector.connection.CBConnection;
 import com.couchbase.connector.plugin.CBPlugin;
 import com.couchbase.connector.utils.AttributeTypeCode;
 import com.couchbase.connector.utils.CBUtils;
-import com.informatica.cloud.api.adapter.common.ELogMsgLevel;
 import com.informatica.cloud.api.adapter.common.ILogger;
 import com.informatica.cloud.api.adapter.metadata.CreateRecordResult;
 import com.informatica.cloud.api.adapter.metadata.DataPreviewException;
@@ -64,20 +63,7 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 		targetRecordInfo.setRecordName(recordInfo.getRecordName());
 		targetRecordInfo.setInstanceName(recordInfo.getRecordName());
 		targetRecordInfo.setCatalogName(recordInfo.getCatalogName());
-		try {
-			targetFields = getFields(recordInfo, false);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.logMessage(
-					"CSVFileMetadata",
-					"createRecord",
-					ELogMsgLevel.INFO,
-					"Error occured while creating target file: "
-							+ e.getMessage());
-			throw new MetadataCreateException(
-					"Error occured while creating target file: "
-							+ e.getMessage());
-		}
+		targetFields.addAll(fieldList);
 		createRecordResult = new CreateRecordResult();
 		createRecordResult.setRecordInfo(targetRecordInfo);
 		createRecordResult.setFields(targetFields);
