@@ -23,7 +23,6 @@ import com.couchbase.connector.connection.CBConnection;
 import com.couchbase.connector.plugin.CBPlugin;
 import com.couchbase.connector.utils.AttributeTypeCode;
 import com.couchbase.connector.utils.CBUtils;
-import com.informatica.cloud.api.adapter.common.ILogger;
 import com.informatica.cloud.api.adapter.metadata.CreateRecordResult;
 import com.informatica.cloud.api.adapter.metadata.DataPreviewException;
 import com.informatica.cloud.api.adapter.metadata.Field;
@@ -46,12 +45,10 @@ public class CBMetadata implements IMetadata, IDefineMetadata, IExtWrtMetadata {
 	private CBPlugin plugin;
 	private CBConnection connection;
 	private List<RecordInfo> lstRecordInfo = new ArrayList<RecordInfo>();
-	private ILogger logger;
 
 	public CBMetadata(CBPlugin cbPlugin, CBConnection cbConnection) {
 		this.plugin = cbPlugin;
 		this.connection = cbConnection;
-		this.logger = cbPlugin.getLogger();
 	}
 
 	@Override
